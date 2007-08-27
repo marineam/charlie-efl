@@ -1,8 +1,8 @@
 CFLAGS  = -g -Wall
 LIBS    = -lecore -lecore_evas -ledje -leet
-LLIBS	= lib/libmpdclient/libmpdclient.o
+LLIBS	= lib/libmpdclient/libmpdclient.o lib/e/e_box.o
 HEAD	= *.h
-OBJ	= layout.o music.o mpdclient.o e_box.o
+OBJ	= layout.o music.o mpdclient.o
 
 all: main
 
