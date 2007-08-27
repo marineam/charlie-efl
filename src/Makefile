@@ -1,7 +1,7 @@
 CFLAGS  = -g -Wall
 LIBS    = -lecore -lecore_evas -ledje -leet
-HEAD	= main.h layout.h music.h e_box.h
-OBJ	= layout.o music.o e_box.o
+HEAD	= main.h layout.h music.h e_box.h e_table.h
+OBJ	= layout.o music.o e_box.o e_table.o
 
 all: main
 

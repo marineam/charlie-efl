@@ -168,7 +168,7 @@ collections {
     name: "music";
     parts {
       part {
-        name: "playlist";
+        name: "list";
         type: SWALLOW;
         description {
           state: "default" 0.0;
@@ -184,7 +184,7 @@ collections {
   }
 
   group {
-    name: "playlist_item";
+    name: "list_item";
     parts {
       part {
         name: "_bg1";
@@ -232,10 +232,10 @@ collections {
         description {
           state: "default" 0.0;
           rel1 {
-            relative: 0.1 0.1;
+            relative: 0.0 0.0;
           }
           rel2 {
-            relative: 0.9 0.9;
+            relative: 1.0 1.0;
           }
           text {
             text: "XXX";

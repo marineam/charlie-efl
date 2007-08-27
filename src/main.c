@@ -29,6 +29,7 @@ int main()
 	evas_font_path_append(evas, DATA "/fonts");
 
 	layout_init();
+	music_init();
 
 	main_menu_add("Music Library", 1);
 	main_menu_add("Radio", 0);
@@ -37,6 +38,9 @@ int main()
 	music_show();
 	music_song_add("Song #1");
 	music_song_add("Song #2");
+	music_song_add("Song #3");
+	music_song_add("Song #4");
+	music_song_add("Song #5");
 
 	ecore_main_loop_begin();
 
