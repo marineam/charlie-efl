@@ -1,3 +1,4 @@
 *.o
 *.edj
 src/main
+src/lib-stamp

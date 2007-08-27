@@ -80,7 +80,7 @@ void mpdclient_playlist_load() {
 		return;
 	}
 
-	printf("volume: %i\n",status->volume);
+	/*printf("volume: %i\n",status->volume);
 	printf("repeat: %i\n",status->repeat);
 	printf("playlist: %lli\n",status->playlist);
 	printf("playlistLength: %i\n",status->playlistLength);
@@ -95,7 +95,7 @@ void mpdclient_playlist_load() {
 		printf("sampleRate: %i\n",status->sampleRate);
 		printf("bits: %i\n",status->bits);
 		printf("channels: %i\n",status->channels);
-	}
+	}*/
 
 	if(conn->error) {
 		fprintf(stderr,"%s\n",conn->errorStr);
@@ -113,7 +113,6 @@ void mpdclient_playlist_load() {
 			continue;
 		}
 
-		printf("file: %s\n",song->file);
 		if(song->artist && song->title) {
 			label_len = strlen(song->artist) + strlen(song->title) + 4;
 

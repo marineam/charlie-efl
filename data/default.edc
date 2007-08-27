@@ -176,9 +176,123 @@ collections {
             relative: 0.0 0.0;
           }
           rel2 {
-            relative: 1.0 1.0;
+            relative: 0.95 0.0;
           }
         }
+      }
+      part {
+        name: "up";
+        description {
+          state: "default" 0.0;
+          image {
+            normal: "mitem.png";
+            border: 18 18 18 18;
+          }
+          rel1 {
+            relative: 0.95 0.0;
+          }
+          rel2 {
+            relative: 1.0 0.3;
+          }
+          color: 255 255 255 150;
+        }
+      }
+      part {
+        name: "up_bg";
+        mouse_events: 0;
+        description {
+          state: "default" 0.0;
+          image {
+            normal: "mitem2.png";
+            border: 18 18 18 18;
+          }
+          rel1 {
+            to: "up";
+          }
+          rel2 {
+            to: "up";
+          }
+          color: 255 255 255 50;
+        }
+        description {
+          state: "active" 0.0;
+          inherit: "default" 0.0;
+          color: 255 255 255 255;
+        }
+      }
+      part {
+        name: "down";
+        description {
+          state: "default" 0.0;
+          image {
+            normal: "mitem.png";
+            border: 18 18 18 18;
+          }
+          rel1 {
+            relative: 0.95 0.7;
+          }
+          rel2 {
+            relative: 1.0 1.0;
+          }
+          color: 255 255 255 150;
+        }
+      }
+      part {
+        name: "down_bg";
+        mouse_events: 0;
+        description {
+          state: "default" 0.0;
+          image {
+            normal: "mitem2.png";
+            border: 18 18 18 18;
+          }
+          rel1 {
+            to: "down";
+          }
+          rel2 {
+            to: "down";
+          }
+          color: 255 255 255 50;
+        }
+        description {
+          state: "active" 0.0;
+          inherit: "default" 0.0;
+          color: 255 255 255 255;
+        }
+      }
+    }
+    programs {
+      program {
+        name: "up_active";
+        signal: "up,on";
+        source: "";
+        action: STATE_SET "active" 0.0;
+        transition: DECELERATE 0.3;
+        target:  "up_bg";
+      }
+      program {
+        name: "up_inactive";
+        signal: "up,off";
+        source: "";
+        action: STATE_SET "default" 0.0;
+        transition: DECELERATE 0.2;
+        target:  "up_bg";
+      }
+      program {
+        name: "down_active";
+        signal: "down,on";
+        source: "";
+        action: STATE_SET "active" 0.0;
+        transition: DECELERATE 0.3;
+        target:  "down_bg";
+      }
+      program {
+        name: "down_inactive";
+        signal: "down,off";
+        source: "";
+        action: STATE_SET "default" 0.0;
+        transition: DECELERATE 0.2;
+        target:  "down_bg";
       }
     }
   }
@@ -232,15 +346,15 @@ collections {
         description {
           state: "default" 0.0;
           rel1 {
-            relative: 0.0 0.0;
+            relative: 0.1 0.1;
           }
           rel2 {
-            relative: 1.0 1.0;
+            relative: 0.9 0.9;
           }
           text {
             text: "XXX";
             font: "Edje-Vera-Bold";
-            fit: 1 1;
+            //fit: 1 1;
             size: 12;
           }
           color: 235 245 255 200;

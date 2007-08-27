@@ -8,8 +8,8 @@
 
 #include "layout.h"
 #include "music.h"
+#include "mpdclient.h"
 #include "e_box.h"
-#include "e_table.h"
 
 #define WIDTH 800
 #define HEIGHT 600

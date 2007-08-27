@@ -36,11 +36,7 @@ int main()
 	main_menu_add("Status", 0);
 
 	music_show();
-	music_song_add("Song #1");
-	music_song_add("Song #2");
-	music_song_add("Song #3");
-	music_song_add("Song #4");
-	music_song_add("Song #5");
+	mpdclient_init();
 
 	ecore_main_loop_begin();
 
