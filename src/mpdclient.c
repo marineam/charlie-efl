@@ -1,5 +1,4 @@
 #include "main.h"
-#include "lib/libmpdclient/libmpdclient.h"
 
 static mpd_Connection * conn;
 static long long cur_playlist;
@@ -39,8 +38,7 @@ static int mpdclient_connect() {
 static int mpdclient_playlist_update(void *data) {
 	mpd_Status * status;
 	mpd_InfoEntity *entity;
-	char *label;
-	int label_len, i;
+	int i;
 
 	mpd_sendCommandListOkBegin(conn);
 	mpd_sendStatusCommand(conn);
@@ -59,24 +57,19 @@ static int mpdclient_playlist_update(void *data) {
 	mpd_nextListOkCommand(conn);
 
 	while((entity = mpd_getNextInfoEntity(conn))) {
-		mpd_Song * song = entity->info.song;
+		mpd_Song *song;
 
 		if(entity->type!=MPD_INFO_ENTITY_TYPE_SONG) {
 			mpd_freeInfoEntity(entity);
 			continue;
 		}
 
-		if(song->artist && song->title) {
-			label_len = strlen(song->artist) +
-				strlen(song->title) + 4;
-
-			if ((label = malloc(label_len))) {
-				snprintf(label, label_len, "%s - %s",
-						song->artist, song->title);
-				music_song_replace(label, song->pos);
-				free(label);
-			}
+		if (!(song = mpd_songDup(entity->info.song))) {
+			perror(__func__);
+			exit(1);
 		}
+
+		music_song_add(song);
 
 		mpd_freeInfoEntity(entity);
 	}

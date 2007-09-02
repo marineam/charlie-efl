@@ -1,22 +1,18 @@
 #include "main.h"
 
-static Evas_Object *music = NULL;
-static Evas_Object *playlist = NULL;
-static Ecore_Timer *playlist_scroll_timer = NULL;
+static Evas_Object *music;
+static Evas_Object *playlist;
+static Ecore_Timer *playlist_scroll_timer;
+static Evas_Coord item_height;
 static int playlist_scroll_top = 0;
 static double playlist_scroll_align = 1.0;
 static double click_time;
-
-struct song_data {
-	int pos;
-};
 
 static int _music_scroll(void *data);
 static void _music_signal(void *data, Evas_Object *obj,
 		const char *signal, const char *source);
 static void _music_song_signal(void *data, Evas_Object *obj,
 		const char *signal, const char *source);
-static void _music_song_insert_replace(const char *label, int pos, int replace);
 static void _music_list_active(Evas_Object *box, Evas_Object *button);
 static void _music_song_free(Evas_Object *song);
 
@@ -36,19 +32,6 @@ void music_show()
 {
 	layout_swallow("main_content", music);
 	evas_object_show(music);
-}
-
-void music_song_add(const char *label)
-{
-	_music_song_insert_replace(label, -1, 0);
-}
-
-void music_song_insert(const char *label, int pos) {
-	_music_song_insert_replace(label, pos, 0);
-}
-
-void music_song_replace(const char *label, int pos) {
-	_music_song_insert_replace(label, pos, 1);
 }
 
 void music_song_remove(int pos) {
@@ -91,52 +74,59 @@ static void _music_list_active(Evas_Object *box, Evas_Object *button) {
 static void _music_song_free(Evas_Object *song)
 {
 	evas_object_hide(song);
-	free(evas_object_data_get(song, "song_data"));
+	mpd_freeSong(evas_object_data_get(song, "song_data"));
 	evas_object_del(song);
 }
 
-static void _music_song_insert_replace(const char *label, int pos, int replace) {
-	struct song_data *data;
+void music_song_add(mpd_Song *data)
+{
 	Evas_Object *song;
 	Evas_Object *tmp;
-	Evas_Coord h;
 	int len = e_box_pack_count_get(playlist);
 
 	song = edje_object_add(evas);
 	edje_object_file_set(song, theme, "list_item");
-	edje_object_part_text_set(song, "label", label);
-	edje_object_signal_callback_add(song, "mouse,clicked,1", "*", _music_song_signal, playlist);
+	edje_object_size_min_calc(song, NULL, &item_height);
+	edje_object_signal_callback_add(song, "mouse,clicked,1", "*",
+			_music_song_signal, playlist);
 
-	if ((data = malloc(sizeof(struct song_data)))) {
-		data->pos = pos;
-		evas_object_data_set(song, "song_data", data);
-	} else {
-		fprintf(stderr, "malloc failed!\n");
-		exit(1);
+	evas_object_data_set(song, "song_data", data);
+	if (data->title)
+		edje_object_part_text_set(song, "title", data->title);
+	else
+		edje_object_part_text_set(song, "title", data->file);
+
+	if (data->artist && data->album) {
+		int len = strlen(data->artist) + strlen(data->album) + 6;
+		char label[len];
+
+		snprintf(label, len, "%s  -  %s", data->artist, data->album);
+		edje_object_part_text_set(song, "artist", label);
 	}
+	else if (data->artist)
+		edje_object_part_text_set(song, "artist", data->artist);
+	else
+		edje_object_part_text_set(song, "artist", "");
 
-	if (pos > len) {
-		fprintf(stderr, "music_song_insert: "
-				"tried to insert past end of list!\n");
+	if (data->pos > len) {
+		fprintf(stderr, "%s: tried to insert past end of list!\n",
+				__func__);
 		e_box_pack_end(playlist, song);
-	} else if (pos < 0 || pos == len ) {
+	} else if (data->pos < 0 || data->pos == len ) {
 		e_box_pack_end(playlist, song);
 	} else {
-		tmp = e_box_pack_object_nth(playlist, pos);
+		tmp = e_box_pack_object_nth(playlist, data->pos);
 		e_box_pack_before(playlist, song, tmp);
-		if (replace) {
-			e_box_unpack(tmp);
-			_music_song_free(tmp);
-		}
+		e_box_unpack(tmp);
+		_music_song_free(tmp);
 	}
 
-	edje_object_size_min_calc(song, NULL, &h);
 	e_box_pack_options_set(song,
 			       1, 0, /* fill */
 			       1, 0, /* expand */
 			       0.5, 0.5, /* align */
-			       -1, h, /* min */
-			       -1, h); /* max */
+			       -1, item_height, /* min */
+			       -1, item_height); /* max */
 
 	evas_object_show(song);
 }
@@ -159,26 +149,16 @@ void music_playlist_scroll(int pos, int align)
 {
 	int total_count = e_box_pack_count_get(playlist), view_count;
 	double old_align = playlist_scroll_align;
-	Evas_Object *tmp;
-	Evas_Coord songh, songh2, listh;
+	Evas_Coord listh;
 
 	if (pos < 0 || pos >= total_count || total_count <= 0)
 		return;
-
-	/* get a item just to see how big it is
-	 * check two because one might be slected (and thus bigger) */
-	tmp = e_box_pack_object_nth(playlist, 0);
-	edje_object_size_min_calc(tmp, NULL, &songh);
-	tmp = e_box_pack_object_nth(playlist, 1);
-	edje_object_size_min_calc(tmp, NULL, &songh2);
-	if (songh > songh2)
-		songh = songh2;
 
 	/* get the size of the playlist's parent object */
 	evas_object_geometry_get(music, NULL, NULL, NULL, &listh);
 	/* FIXME: account for when list != music in height */
 
-	view_count = ((songh/2) + listh) / songh;
+	view_count = ((item_height/2) + listh) / item_height;
 
 	if (align < 0)
 		align = align + view_count;
@@ -251,7 +231,7 @@ static int _music_scroll(void *data) {
 }
 
 static void _music_song_signal(void *data, Evas_Object *obj, const char *signal, const char *source) {
-	struct song_data *songd;
+	mpd_Song *songd;
 	
 	click_time = ecore_time_get();
 	

@@ -1,4 +1,5 @@
-CFLAGS  = -g -Wall
+CC	= gcc
+CFLAGS  = -g -Wall -std=gnu99
 LIBS    = -lecore -lecore_evas -ledje -leet
 LLIBS	= lib/libmpdclient/libmpdclient.o lib/e/e_box.o
 HEAD	= *.h

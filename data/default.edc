@@ -387,22 +387,24 @@ collections {
         }
       }
       part {
-        name: "label";
+        name: "title";
         type: TEXT;
         effect: NONE;
         description {
           state: "default" 0.0;
           rel1 {
-            relative: 0.0 0.1;
-            offset: 50 0;
+            to: _bg1;
+            relative: 0.0 0.05;
+            offset: 50 5;
           }
           rel2 {
-            relative: 1.0 0.9;
+            to: _bg1;
+            relative: 1.0 0.6;
           }
           text {
             text: "XXX";
             font: "Edje-Vera-Bold";
-            fit: 0 0;
+            fit: 0 1;
             size: 12;
             align: 0.0 0.5;
           }
@@ -417,6 +419,39 @@ collections {
           }
         }
       }
+      part {
+        name: "artist";
+        type: TEXT;
+        effect: NONE;
+        description {
+          state: "default" 0.0;
+          rel1 {
+            to: _bg1;
+            relative: 0.0 0.6;
+            offset: 50 0;
+          }
+          rel2 {
+            to: _bg1;
+            relative: 1.0 0.95;
+            offset: 0 -5;
+          }
+          text {
+            text: "XXX";
+            font: "Edje-Vera-Bold";
+            fit: 0 1;
+            size: 12;
+            align: 0.0 0.5;
+          }
+          color: 235 245 255 200;
+        }
+        description {
+          state: "active" 0.0;
+          inherit: "default" 0.0;
+          color: 255 255 255 255;
+          text {
+            size: 12;
+          }
+        }
     }
     programs {
       program {
@@ -427,7 +462,8 @@ collections {
         transition: DECELERATE 0.3;
         target:  "_bg1";
         target:  "_bg2";
-        target:  "label";
+        target:  "title";
+        target:  "artist";
       }
       program {
         name: "inactive";
@@ -437,7 +473,8 @@ collections {
         transition: DECELERATE 0.2;
         target:  "_bg1";
         target:  "_bg2";
-        target:  "label";
+        target:  "title";
+        target:  "artist";
       }
     }
   }

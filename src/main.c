@@ -4,6 +4,7 @@ Ecore_Evas *ecore_evas;
 Evas *evas;
 
 static int main_signal_exit(void *data, int ev_type, void *ev);
+static void main_resize(Ecore_Evas *ee);
 static void main_menu_add(const char* label, int active);
 
 int main()
@@ -20,6 +21,7 @@ int main()
 				NULL);
 
 	ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, WIDTH, HEIGHT);
+	ecore_evas_callback_resize_set(ecore_evas, main_resize);
 	ecore_evas_title_set(ecore_evas, "Charlie!");
 	ecore_evas_borderless_set(ecore_evas, 0);
 	ecore_evas_show(ecore_evas);
@@ -45,6 +47,12 @@ int main()
 	eet_shutdown();
 	return 0;
 }
+
+static void main_resize(Ecore_Evas *ee)
+{
+	layout_resize();
+}
+
 
 static int main_signal_exit(void *data, int ev_type, void *ev)
 {

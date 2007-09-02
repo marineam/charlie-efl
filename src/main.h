@@ -6,10 +6,11 @@
 #include <Edje.h>
 #include <Eet.h>
 
+#include "lib/e/e_box.h"
+#include "lib/libmpdclient/libmpdclient.h"
 #include "layout.h"
 #include "music.h"
 #include "mpdclient.h"
-#include "lib/e/e_box.h"
 
 #define WIDTH 800
 #define HEIGHT 600
