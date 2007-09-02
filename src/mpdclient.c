@@ -1,45 +1,18 @@
-/* libmpdclient
-   (c)2003-2006 by Warren Dukes (warren.dukes@gmail.com)
-   This project's homepage is: http://www.musicpd.org
-
-   Redistribution and use in source and binary forms, with or without
-   modification, are permitted provided that the following conditions
-   are met:
-
-   - Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-
-   - Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-
-   - Neither the name of the Music Player Daemon nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
-
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-   A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION OR
-   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-   EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-   PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
 #include "main.h"
 #include "lib/libmpdclient/libmpdclient.h"
 
 static mpd_Connection * conn;
+static long long cur_playlist;
+static int cur_song;
 
 static int mpdclient_connect();
+static int mpdclient_playlist_update(void *data);
 
 void mpdclient_init() {
-	if (!mpdclient_connect())
-		mpdclient_playlist_load();
+	if (!mpdclient_connect()) {
+		mpdclient_playlist_update(NULL);
+		ecore_timer_add(1.0, mpdclient_playlist_update, NULL);
+	}
 	//mpd_closeConnection(conn); put this somewhere
 }
 
@@ -63,45 +36,25 @@ static int mpdclient_connect() {
 	return 0;
 }
 
-void mpdclient_playlist_load() {
+static int mpdclient_playlist_update(void *data) {
 	mpd_Status * status;
 	mpd_InfoEntity *entity;
 	char *label;
-	int label_len;
+	int label_len, i;
 
 	mpd_sendCommandListOkBegin(conn);
 	mpd_sendStatusCommand(conn);
-	mpd_sendPlaylistInfoCommand(conn, -1);
+	mpd_sendPlChangesCommand(conn, cur_playlist);
 	mpd_sendCommandListEnd(conn);
 
 	if((status = mpd_getStatus(conn))==NULL) {
 		fprintf(stderr,"%s\n",conn->errorStr);
 		mpd_closeConnection(conn);
-		return;
+		return 1;
 	}
 
-	/*printf("volume: %i\n",status->volume);
-	printf("repeat: %i\n",status->repeat);
-	printf("playlist: %lli\n",status->playlist);
-	printf("playlistLength: %i\n",status->playlistLength);
-	if(status->error) printf("error: %s\n",status->error);
-
-	if(status->state == MPD_STATUS_STATE_PLAY || 
-			status->state == MPD_STATUS_STATE_PAUSE) {
-		printf("song: %i\n",status->song);
-		printf("elaspedTime: %i\n",status->elapsedTime);
-		printf("totalTime: %i\n",status->totalTime);
-		printf("bitRate: %i\n",status->bitRate);
-		printf("sampleRate: %i\n",status->sampleRate);
-		printf("bits: %i\n",status->bits);
-		printf("channels: %i\n",status->channels);
-	}*/
-
-	if(conn->error) {
-		fprintf(stderr,"%s\n",conn->errorStr);
-		mpd_closeConnection(conn);
-		return;
-	}
+	cur_playlist = status->playlist;
+	cur_song = status->songid;
 
 	mpd_nextListOkCommand(conn);
 
@@ -114,11 +67,13 @@ void mpdclient_playlist_load() {
 		}
 
 		if(song->artist && song->title) {
-			label_len = strlen(song->artist) + strlen(song->title) + 4;
+			label_len = strlen(song->artist) +
+				strlen(song->title) + 4;
 
 			if ((label = malloc(label_len))) {
-				snprintf(label, label_len, "%s - %s", song->artist, song->title);
-				music_song_add(label);
+				snprintf(label, label_len, "%s - %s",
+						song->artist, song->title);
+				music_song_replace(label, song->pos);
 				free(label);
 			}
 		}
@@ -126,20 +81,24 @@ void mpdclient_playlist_load() {
 		mpd_freeInfoEntity(entity);
 	}
 
-	if(conn->error) {
-		fprintf(stderr,"%s\n",conn->errorStr);
-		mpd_closeConnection(conn);
-		return;
+	for (i = status->playlistLength; i < music_song_count(); i++) {
+		music_song_remove(i);
 	}
+
+	if(status->state == MPD_STATUS_STATE_PLAY ||
+			status->state == MPD_STATUS_STATE_PAUSE) {
+		music_song_active(status->song);
+		music_playlist_autoscroll(status->song, 4);
+
+	} else
+		music_song_active(-1);
 
 	mpd_finishCommand(conn);
-	if(conn->error) {
-		fprintf(stderr,"%s\n",conn->errorStr);
-		mpd_closeConnection(conn);
-		return;
-	}
-
 	mpd_freeStatus(status);
+	return 1;
+}
 
-	return;
+void mpdclient_song_play(int pos) {
+	mpd_sendPlayCommand(conn, pos);
+	mpd_finishCommand(conn);
 }

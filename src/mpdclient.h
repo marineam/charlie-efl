@@ -1,3 +1,3 @@
 
 void mpdclient_init();
-void mpdclient_playlist_load();
+void mpdclient_song_play(int pos);
