@@ -183,16 +183,12 @@ void music_playlist_scroll(int pos, int align)
 	if (align < 0)
 		align = align + view_count;
 	else if (align == 0) {
-		printf("pos: %d\n", pos);
-		printf("top: %d\n", playlist_scroll_top);
-		printf("view_count: %d\n", view_count);
 		if (playlist_scroll_top >= pos)
 			align = 1;
 		else if (playlist_scroll_top+view_count-1 <= pos)
 			align = view_count - 2;
 		else
 			return;
-		printf("align: %d\n", align);
 	} else
 		align--;
 
