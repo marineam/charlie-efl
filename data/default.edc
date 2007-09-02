@@ -459,7 +459,7 @@ collections {
         signal: "button,on";
         source: "";
         action: STATE_SET "active" 0.0;
-        transition: DECELERATE 0.3;
+        transition: DECELERATE 0.2;
         target:  "_bg1";
         target:  "_bg2";
         target:  "title";
