@@ -197,16 +197,15 @@ void music_playlist_scroll(int pos, int align)
 	}
 	else {
 		playlist_scroll_top = pos-align;
+
+		if (playlist_scroll_top < 0)
+			playlist_scroll_top = 0;
+		if (playlist_scroll_top > total_count-view_count)
+			playlist_scroll_top = total_count-view_count;
 	}
 
-	if (playlist_scroll_top < 0)
-		playlist_scroll_top = 0;
-	if (playlist_scroll_top > total_count-view_count)
-		playlist_scroll_top = total_count-view_count;
-
 	playlist_scroll_align =
-			1.0 + 1.0/listh /*small pat at top */
-			- ((double)(playlist_scroll_top) / total_count);
+		1.0 - ((double)(playlist_scroll_top) / total_count);
 
 	if (!playlist_scroll_timer && old_align != playlist_scroll_align)
 		playlist_scroll_timer =
