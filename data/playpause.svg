@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="/home/marineam/e/music/data"
+   sodipodi:docname="play.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3144">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop3146" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop3148" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3144"
+       id="radialGradient3150"
+       cx="299.54285"
+       cy="420.93362"
+       fx="299.54285"
+       fy="420.93362"
+       r="109.02857"
+       gradientTransform="matrix(1,0,0,1.0946986,0,-39.861843)"
+       gradientUnits="userSpaceOnUse" />
+    <filter
+       inkscape:collect="always"
+       id="filter3195">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="1.14691"
+         id="feGaussianBlur3197" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.88564022"
+     inkscape:cx="372.04724"
+     inkscape:cy="575.64801"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="745"
+     inkscape:window-height="593"
+     inkscape:window-x="920"
+     inkscape:window-y="400" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="bg"
+     style="display:inline">
+    <image
+       style="display:inline"
+       y="0.57784045"
+       x="-593.5061"
+       id="image2219"
+       height="1080"
+       width="1920"
+       sodipodi:absref="/home/marineam/e/music/data/bg.png"
+       xlink:href="bg.png" />
+  </g>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <path
+       sodipodi:type="star"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:url(#radialGradient3150);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:round;marker-start:none;stroke-opacity:1;filter:url(#filter3195)"
+       id="path2160"
+       sodipodi:sides="3"
+       sodipodi:cx="271.42856"
+       sodipodi:cy="420.93362"
+       sodipodi:r1="137.14285"
+       sodipodi:r2="68.571426"
+       sodipodi:arg1="-1.5401866e-10"
+       sodipodi:arg2="1.0471976"
+       inkscape:flatsided="true"
+       inkscape:rounded="0.08"
+       inkscape:randomized="0"
+       d="M 408.57141,420.93362 C 408.57141,439.9367 219.31427,549.20435 202.85713,539.70282 C 186.39999,530.20128 186.39999,311.66597 202.85713,302.16443 C 219.31427,292.66289 408.57141,401.93055 408.57141,420.93362 z "
+       inkscape:export-xdpi="37.387508"
+       inkscape:export-ydpi="37.387508"
+       transform="translate(49.980262,-233.24122)"
+       inkscape:export-filename="/home/marineam/e/music/data/play.png" />
+    <g
+       id="g3205"
+       transform="matrix(1.3515051,0,0,1.4026445,28.92663,-213.75443)"
+       inkscape:export-filename="/home/marineam/e/music/data/pause.png"
+       inkscape:export-xdpi="37.387508"
+       inkscape:export-ydpi="37.387508">
+      <rect
+         ry="8"
+         rx="8"
+         y="517.08405"
+         x="186.28616"
+         height="172.40276"
+         width="54.289898"
+         id="rect3199"
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-linejoin:round" />
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-linejoin:round"
+         id="rect3203"
+         width="54.289898"
+         height="172.40276"
+         x="266.28616"
+         y="517.08405"
+         rx="8"
+         ry="8" />
+    </g>
+  </g>
+</svg>

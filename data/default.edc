@@ -9,6 +9,8 @@ images {
   image: "mitem2.png" COMP;
   image: "mitem.png" COMP;
   image: "album.png" COMP;
+  image: "play.png" COMP;
+  image: "pause.png" COMP;
 }
 
 collections {
@@ -196,8 +198,47 @@ collections {
             relative: 0.0 0.0;
           }
           rel2 {
-            relative: 0.95 0.0;
+            relative: 0.95 0.9;
           }
+        }
+      }
+      part {
+        name: "playpause";
+        description {
+          state: "play" 0.0;
+          aspect: 1.0 1.0;
+          image {
+            normal: "play.png";
+          }
+          rel1 {
+            relative: 0.0 1.0;
+            offset: 5 -50;
+          }
+          rel2 {
+            relative: 0.0 1.0;
+            offset: 50 -5;
+          }
+          color: 235 245 255 200;
+        }
+        description {
+          state: "pause" 0.0;
+          aspect: 1.0 1.0;
+          image {
+            normal: "pause.png";
+          }
+          rel1 {
+            relative: 0.0 1.0;
+            offset: 5 -50;
+          }
+          rel2 {
+            relative: 0.0 1.0;
+            offset: 50 -5;
+          }
+          color: 235 245 255 200;
+        }
+        description {
+          state: "default" 0.0;
+          inherit: "play" 0.0;
         }
       }
       part {
