@@ -6,6 +6,7 @@ fonts {
 images {
   image: "bg.png" COMP;
   image: "bg-menu.png" COMP;
+  image: "bg-status.png" COMP;
   image: "mitem2.png" COMP;
   image: "mitem.png" COMP;
   image: "album.png" COMP;
@@ -57,9 +58,11 @@ collections {
           aspect_preference: NONE;
           aspect: 17.7777778 17.7777778;
           rel1 {
+            to: background;
             relative: 0.0 0.9;
           }
           rel2 {
+            to: background;
             relative: 1.0 1.0;
           }
           image {
@@ -198,15 +201,32 @@ collections {
             relative: 0.0 0.0;
           }
           rel2 {
-            relative: 0.95 0.9;
+            relative: 0.95 0.888888888888889;
+          }
+        }
+      }
+      part {
+        name: "status";
+        description {
+          state: "default" 0.0;
+          aspect_preference: NONE;
+          aspect: 17.7777778 17.7777778;
+          rel1 {
+            relative: 0.0 0.888888888888889;
+          }
+          rel2 {
+            relative: 1.0 1.0;
+          }
+          image {
+            normal: "bg-status.png";
           }
         }
       }
       part {
         name: "playpause";
         description {
-          state: "play" 0.0;
-          aspect: 1.0 1.0;
+          state: "default" 0.0;
+          aspect: 0.91 0.91;
           image {
             normal: "play.png";
           }
@@ -222,7 +242,7 @@ collections {
         }
         description {
           state: "pause" 0.0;
-          aspect: 1.0 1.0;
+          aspect: 0.75 0.75;
           image {
             normal: "pause.png";
           }
@@ -237,8 +257,8 @@ collections {
           color: 235 245 255 200;
         }
         description {
-          state: "default" 0.0;
-          inherit: "play" 0.0;
+          state: "play" 0.0;
+          inherit: "default" 0.0;
         }
       }
       part {
