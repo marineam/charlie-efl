@@ -6,6 +6,7 @@ static Ecore_Timer *playlist_scroll_timer;
 static int playlist_scroll_top = 0;
 static double playlist_scroll_align = 1.0;
 static double click_time;
+static int playpause_playing = 0;
 
 static int _music_scroll(void *data);
 static void _music_signal(void *data, Evas_Object *obj,
@@ -53,6 +54,17 @@ void music_song_active(int pos) {
 		song = e_box_pack_object_nth(playlist, pos);
 		_music_list_active(playlist, song);
 	}
+}
+
+void music_playing(int state) {
+	if (state == playpause_playing)
+		return;
+
+	playpause_playing = state;
+	if (state)
+		edje_object_signal_emit(music, "play", "");
+	else
+		edje_object_signal_emit(music, "pause", "");
 }
 
 static void _music_list_active(Evas_Object *box, Evas_Object *button) {
@@ -205,6 +217,14 @@ static void _music_signal(void *data, Evas_Object *obj, const char *signal, cons
 	else if (!strcmp("down", source)) {
 		edje_object_signal_emit(obj, "down,on", "");
 		music_playlist_scroll(playlist_scroll_top+1, 1);
+	}
+	else if (!strcmp("playpause", source) && playpause_playing) {
+		mpdclient_pause(1);
+		music_playing(0);
+	}
+	else if (!strcmp("playpause", source)) {
+		mpdclient_pause(0);
+		music_playing(1);
 	}
 }
 

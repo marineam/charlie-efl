@@ -241,7 +241,7 @@ collections {
           color: 235 245 255 200;
         }
         description {
-          state: "pause" 0.0;
+          state: "play" 0.0;
           aspect: 0.75 0.75;
           image {
             normal: "pause.png";
@@ -257,7 +257,7 @@ collections {
           color: 235 245 255 200;
         }
         description {
-          state: "play" 0.0;
+          state: "pause" 0.0;
           inherit: "default" 0.0;
         }
       }
@@ -374,6 +374,22 @@ collections {
         action: STATE_SET "default" 0.0;
         transition: DECELERATE 0.2;
         target:  "down_bg";
+      }
+      program {
+        name: "playpause_play";
+        signal: "play";
+        source: "";
+        action: STATE_SET "play" 0.0;
+        transition: SINUSOIDAL 0.2;
+        target: "playpause";
+      }
+      program {
+        name: "playpause_pause";
+        signal: "pause";
+        source: "";
+        action: STATE_SET "pause" 0.0;
+        transition: SINUSOIDAL 0.2;
+        target: "playpause";
       }
     }
   }
