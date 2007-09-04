@@ -3,7 +3,6 @@
 static Evas_Object *music;
 static Evas_Object *playlist;
 static Ecore_Timer *playlist_scroll_timer;
-static Evas_Coord item_height;
 static int playlist_scroll_top = 0;
 static double playlist_scroll_align = 1.0;
 static double click_time;
@@ -82,11 +81,12 @@ void music_song_add(mpd_Song *data)
 {
 	Evas_Object *song;
 	Evas_Object *tmp;
+	Evas_Coord height;
 	int len = e_box_pack_count_get(playlist);
 
 	song = edje_object_add(evas);
 	edje_object_file_set(song, theme, "list_item");
-	edje_object_size_min_calc(song, NULL, &item_height);
+	edje_object_size_min_calc(song, NULL, &height);
 	edje_object_signal_callback_add(song, "mouse,clicked,1", "*",
 			_music_song_signal, playlist);
 
@@ -125,8 +125,8 @@ void music_song_add(mpd_Song *data)
 			       1, 0, /* fill */
 			       1, 0, /* expand */
 			       0.5, 0.5, /* align */
-			       -1, item_height, /* min */
-			       -1, item_height); /* max */
+			       -1, height, /* min */
+			       -1, height); /* max */
 
 	evas_object_show(song);
 }
@@ -147,32 +147,32 @@ void music_playlist_autoscroll(int pos, int align)
  */
 void music_playlist_scroll(int pos, int align)
 {
-	int total_count = e_box_pack_count_get(playlist), view_count;
-	double old_align = playlist_scroll_align;
-	Evas_Coord listh;
+	int total = e_box_pack_count_get(playlist);
+	double old_align = playlist_scroll_align, view;
+	Evas_Coord listh, boxh;
 
-	if (pos < 0 || pos >= total_count || total_count <= 0)
+	if (pos < 0 || pos >= total || total <= 0)
 		return;
 
-	/* get the size of the playlist's parent object */
-	evas_object_geometry_get(music, NULL, NULL, NULL, &listh);
-	/* FIXME: account for when list != music in height */
+	/* get the size of the playlist and parent object */
+	e_box_min_size_get(playlist, NULL, &boxh);
+	edje_object_part_geometry_get(music, "list", NULL, NULL, NULL, &listh);
 
-	view_count = ((item_height/2) + listh) / item_height;
+	view = (double)listh / (boxh/total);
 
 	if (align < 0)
-		align = align + view_count;
+		align = align + view;
 	else if (align == 0) {
 		if (playlist_scroll_top >= pos)
 			align = 1;
-		else if (playlist_scroll_top+view_count-1 <= pos)
-			align = view_count - 2;
+		else if (playlist_scroll_top + (int)view - 1 <= pos)
+			align = view - 2;
 		else
 			return;
 	} else
 		align--;
 
-	if (view_count >= total_count) {
+	if ((int)view >= total) {
 		playlist_scroll_top = 0;
 	}
 	else {
@@ -180,12 +180,12 @@ void music_playlist_scroll(int pos, int align)
 
 		if (playlist_scroll_top < 0)
 			playlist_scroll_top = 0;
-		if (playlist_scroll_top > total_count-view_count)
-			playlist_scroll_top = total_count-view_count;
+		if (playlist_scroll_top > total - (int)(view))
+			playlist_scroll_top = total - view + .95;
 	}
 
 	playlist_scroll_align =
-		1.0 - ((double)(playlist_scroll_top) / total_count);
+		1.0 - ((double)playlist_scroll_top / (total - view));
 
 	if (!playlist_scroll_timer && old_align != playlist_scroll_align)
 		playlist_scroll_timer =
