@@ -11,6 +11,7 @@ void mpdclient_init() {
 	if (!mpdclient_connect()) {
 		mpdclient_playlist_update(NULL);
 		ecore_timer_add(1.0, mpdclient_playlist_update, NULL);
+		music_playlist_scroll(0, 1, 1);
 	}
 	//mpd_closeConnection(conn); put this somewhere
 }

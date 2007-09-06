@@ -4,7 +4,7 @@ static Evas_Object *music;
 static Evas_Object *playlist;
 static Ecore_Timer *playlist_scroll_timer;
 static int playlist_scroll_top = 0;
-static double playlist_scroll_align = 1.0;
+static double playlist_scroll_align = 0.0;
 static double click_time;
 static int playpause_playing = 0;
 
@@ -146,10 +146,11 @@ void music_song_add(mpd_Song *data)
 void music_playlist_autoscroll(int pos, int align)
 {
 	double time = ecore_time_get();
+
 	if (click_time + 30.0 < time)
-		music_playlist_scroll(pos, align);
+		music_playlist_scroll(pos, align, 0);
 	else if (click_time + 5.0 < time)
-		music_playlist_scroll(pos, 0);
+		music_playlist_scroll(pos, 0, 0);
 }	
 
 /* pos: song position in list align is relative to
@@ -157,7 +158,7 @@ void music_playlist_autoscroll(int pos, int align)
  * 	negative counts up from bottom
  * 	0 is automagical
  */
-void music_playlist_scroll(int pos, int align)
+void music_playlist_scroll(int pos, int align, int force)
 {
 	int total = e_box_pack_count_get(playlist);
 	double old_align = playlist_scroll_align, view;
@@ -186,6 +187,7 @@ void music_playlist_scroll(int pos, int align)
 
 	if ((int)view >= total) {
 		playlist_scroll_top = 0;
+		playlist_scroll_align = 0.0;
 	}
 	else {
 		playlist_scroll_top = pos-align;
@@ -194,12 +196,14 @@ void music_playlist_scroll(int pos, int align)
 			playlist_scroll_top = 0;
 		if (playlist_scroll_top > total - (int)(view))
 			playlist_scroll_top = total - view + .95;
+	
+		playlist_scroll_align =
+			1.0 - ((double)playlist_scroll_top / (total - view));
 	}
 
-	playlist_scroll_align =
-		1.0 - ((double)playlist_scroll_top / (total - view));
-
-	if (!playlist_scroll_timer && old_align != playlist_scroll_align)
+	if (force)
+		e_box_align_set(playlist, 0.0, playlist_scroll_align);
+	else if (!playlist_scroll_timer && old_align != playlist_scroll_align)
 		playlist_scroll_timer =
 			ecore_timer_add(1.0 / 30.0, _music_scroll, NULL);
 }
@@ -212,11 +216,11 @@ static void _music_signal(void *data, Evas_Object *obj, const char *signal, cons
 
 	if (!strcmp("up", source)) {
 		edje_object_signal_emit(obj, "up,on", "");
-		music_playlist_scroll(playlist_scroll_top-1, 1);
+		music_playlist_scroll(playlist_scroll_top-1, 1, 0);
 	}
 	else if (!strcmp("down", source)) {
 		edje_object_signal_emit(obj, "down,on", "");
-		music_playlist_scroll(playlist_scroll_top+1, 1);
+		music_playlist_scroll(playlist_scroll_top+1, 1, 0);
 	}
 	else if (!strcmp("playpause", source) && playpause_playing) {
 		mpdclient_pause(1);
@@ -257,7 +261,7 @@ static void _music_song_signal(void *data, Evas_Object *obj, const char *signal,
 	
 	_music_list_active((Evas_Object*)data, obj);
 	if ((songd = evas_object_data_get(obj, "song_data"))) {
-		music_playlist_scroll(songd->pos, 0);
+		music_playlist_scroll(songd->pos, 0, 0);
 		mpdclient_song_play(songd->pos);
 	}
 
