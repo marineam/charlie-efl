@@ -15,6 +15,7 @@ static void _music_song_signal(void *data, Evas_Object *obj,
 		const char *signal, const char *source);
 static void _music_list_active(Evas_Object *box, Evas_Object *button);
 static void _music_song_free(Evas_Object *song);
+static void _music_slider_set(double progress);
 
 void music_init()
 {
@@ -32,6 +33,8 @@ void music_show()
 {
 	layout_swallow("main_content", music);
 	evas_object_show(music);
+
+//	_music_slider_set(0.5);
 }
 
 void music_song_remove(int pos) {
@@ -87,6 +90,19 @@ static void _music_song_free(Evas_Object *song)
 	evas_object_hide(song);
 	mpd_freeSong(evas_object_data_get(song, "song_data"));
 	evas_object_del(song);
+}
+
+static void _music_slider_set(double progress)
+{
+	Evas_Object *slider;
+	Evas_Coord bar_x, bar_w, slider_w, slider_y, new_x;
+
+	slider = edje_object_part_object_get(music, "slider");
+	edje_object_part_geometry_get(music, "slidebar", &bar_x, NULL, &bar_w, NULL);
+	evas_object_geometry_get(slider, NULL, &slider_y, &slider_w, NULL);
+
+	new_x = (int)((double)bar_w * progress) + bar_x - ((double)slider_w / 2.0);
+	evas_object_move(slider, new_x, slider_y);
 }
 
 void music_song_add(mpd_Song *data)

@@ -227,16 +227,19 @@ collections {
         description {
           state: "default" 0.0;
           aspect: 0.91 0.91;
+          align: 0.0 0.5;
           image {
             normal: "play.png";
           }
           rel1 {
-            relative: 0.0 1.0;
-            offset: 5 -45;
+            to_y: status;
+            relative: 0.0 0.1;
+            offset: 5 0;
           }
           rel2 {
-            relative: 0.0 1.0;
-            offset: 45 -5;
+            to_y: status;
+            relative: 0.001 0.9;
+            offset: 5 0;
           }
           color: 235 245 255 200;
         }
@@ -251,6 +254,43 @@ collections {
         description {
           state: "pause" 0.0;
           inherit: "default" 0.0;
+        }
+      }
+      part {
+        name: "slidebar";
+        type: RECT;
+        description {
+          state: "default" 0.0;
+          rel1 {
+            to: status;
+            relative: 0.2 0.5;
+            offset: 0 -1;
+          }
+          rel2 {
+            to: status;
+            relative: 0.8 0.5;
+            offset: 0 1;
+          }
+          color: 235 245 255 200;
+        }
+      }
+      part {
+        name: "slider";
+        type: RECT;
+        description {
+          state: "default" 0.0;
+          aspect: 0.3 0.3;
+          rel1 {
+            to_x: slidebar;
+            to_y: status;
+            relative: 0.0 0.1;
+          }
+          rel2 {
+            to_x: slidebar;
+            to_y: status;
+            relative: 0.001 0.9;
+          }
+          color: 235 245 255 200;
         }
       }
       part {
