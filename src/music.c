@@ -112,7 +112,8 @@ void music_song_add(mpd_Song *data)
 		int len = strlen(data->artist) + strlen(data->album) + 6;
 		char label[len];
 
-		snprintf(label, len, "%s  -  %s", data->artist, data->album);
+		snprintf(label, len, "by %s   on %s",
+			data->artist, data->album);
 		edje_object_part_text_set(song, "artist", label);
 	}
 	else if (data->artist)

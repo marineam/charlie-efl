@@ -232,11 +232,11 @@ collections {
           }
           rel1 {
             relative: 0.0 1.0;
-            offset: 5 -50;
+            offset: 5 -45;
           }
           rel2 {
             relative: 0.0 1.0;
-            offset: 50 -5;
+            offset: 45 -5;
           }
           color: 235 245 255 200;
         }
@@ -246,15 +246,7 @@ collections {
           image {
             normal: "pause.png";
           }
-          rel1 {
-            relative: 0.0 1.0;
-            offset: 5 -50;
-          }
-          rel2 {
-            relative: 0.0 1.0;
-            offset: 50 -5;
-          }
-          color: 235 245 255 200;
+          inherit: "default" 0.0;
         }
         description {
           state: "pause" 0.0;
