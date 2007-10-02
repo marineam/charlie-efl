@@ -10,3 +10,5 @@ void music_playlist_autoscroll(int pos, int align);
 void music_playlist_scroll(int pos, int align, int force);
 
 void music_playing(int state);
+
+void music_slider_set(double progress);

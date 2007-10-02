@@ -1,6 +1,7 @@
 #include "main.h"
 
 static Evas_Object *music;
+static Evas_Object *slider;
 static Evas_Object *playlist;
 static Ecore_Timer *playlist_scroll_timer;
 static int playlist_scroll_top = 0;
@@ -15,7 +16,6 @@ static void _music_song_signal(void *data, Evas_Object *obj,
 		const char *signal, const char *source);
 static void _music_list_active(Evas_Object *box, Evas_Object *button);
 static void _music_song_free(Evas_Object *song);
-static void _music_slider_set(double progress);
 
 void music_init()
 {
@@ -27,6 +27,9 @@ void music_init()
 	edje_object_part_swallow(music, "list", playlist);
 	e_box_align_set(playlist, 0.0, playlist_scroll_align);
 	evas_object_show(playlist);
+
+	slider = evas_object_rectangle_add(evas);
+	evas_object_color_set(slider, 10, 207, 233, 50);
 }
 
 void music_show()
@@ -34,7 +37,8 @@ void music_show()
 	layout_swallow("main_content", music);
 	evas_object_show(music);
 
-//	_music_slider_set(0.5);
+	music_slider_set(0.0);
+	evas_object_show(slider);
 }
 
 void music_song_remove(int pos) {
@@ -92,17 +96,17 @@ static void _music_song_free(Evas_Object *song)
 	evas_object_del(song);
 }
 
-static void _music_slider_set(double progress)
+void music_slider_set(double progress)
 {
-	Evas_Object *slider;
-	Evas_Coord bar_x, bar_w, slider_w, slider_y, new_x;
+	Evas_Object *area;
+	Evas_Coord slide_x, slide_y, slide_w, slide_h;
 
-	slider = edje_object_part_object_get(music, "slider");
-	edje_object_part_geometry_get(music, "slidebar", &bar_x, NULL, &bar_w, NULL);
-	evas_object_geometry_get(slider, NULL, &slider_y, &slider_w, NULL);
+	area = edje_object_part_object_get(music, "slider");
+	evas_object_geometry_get(area, &slide_x, &slide_y, &slide_w, &slide_h);
 
-	new_x = (int)((double)bar_w * progress) + bar_x - ((double)slider_w / 2.0);
-	evas_object_move(slider, new_x, slider_y);
+	evas_object_resize(slider, slide_h * 0.2, slide_h * 0.5);
+	evas_object_move(slider, slide_x - slide_h * 0.1 +
+		slide_w * progress, slide_y + slide_h * .25);
 }
 
 void music_song_add(mpd_Song *data)
@@ -125,15 +129,20 @@ void music_song_add(mpd_Song *data)
 		edje_object_part_text_set(song, "title", data->file);
 
 	if (data->artist && data->album) {
-		int len = strlen(data->artist) + strlen(data->album) + 6;
+		int len = strlen(data->artist) + strlen(data->album) + 9;
 		char label[len];
 
-		snprintf(label, len, "by %s   on %s",
+		snprintf(label, len, "by %s, on %s",
 			data->artist, data->album);
 		edje_object_part_text_set(song, "artist", label);
 	}
-	else if (data->artist)
-		edje_object_part_text_set(song, "artist", data->artist);
+	else if (data->artist) {
+		int len = strlen(data->artist) + 4;
+		char label[len];
+
+		snprintf(label, len, "by %s", data->artist);
+		edje_object_part_text_set(song, "artist", label);
+	}
 	else
 		edje_object_part_text_set(song, "artist", "");
 
@@ -229,7 +238,9 @@ void music_playlist_scroll(int pos, int align, int force)
 
 
 
-static void _music_signal(void *data, Evas_Object *obj, const char *signal, const char *source) {
+static void _music_signal(void *data, Evas_Object *obj, const char *signal, const char *source)
+{
+	click_time = ecore_time_get();
 
 	if (!strcmp("up", source)) {
 		edje_object_signal_emit(obj, "up,on", "");
@@ -252,8 +263,6 @@ static void _music_signal(void *data, Evas_Object *obj, const char *signal, cons
 static int _music_scroll(void *data) {
 	double diff, curr;
 
-	click_time = ecore_time_get();
-	
 	e_box_align_get(playlist, NULL, &curr);
 
 	diff = playlist_scroll_align - curr;

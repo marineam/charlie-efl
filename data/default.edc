@@ -279,7 +279,7 @@ collections {
         type: RECT;
         description {
           state: "default" 0.0;
-          aspect: 0.3 0.3;
+          visible: 0;
           rel1 {
             to_x: slidebar;
             to_y: status;
@@ -288,9 +288,8 @@ collections {
           rel2 {
             to_x: slidebar;
             to_y: status;
-            relative: 0.001 0.9;
+            relative: 1.0 0.9;
           }
-          color: 235 245 255 200;
         }
       }
       part {
@@ -425,7 +424,6 @@ collections {
       }
     }
   }
-
   group {
     name: "list_item";
     parts {

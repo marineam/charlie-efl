@@ -83,8 +83,11 @@ static int mpdclient_playlist_update(void *data) {
 			status->state == MPD_STATUS_STATE_PAUSE) {
 		music_song_active(status->song);
 		music_playlist_autoscroll(status->song, 4);
-	} else
+		music_slider_set((double)status->elapsedTime / status->totalTime);
+	} else {
 		music_song_active(-1);
+		music_slider_set(0.0);
+	}
 
 	music_playing(status->state == MPD_STATUS_STATE_PLAY);
 
