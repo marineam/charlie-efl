@@ -2,6 +2,7 @@
 
 static Evas_Object *music;
 static Evas_Object *slider;
+static Evas_Object *scroller;
 static Evas_Object *playlist;
 static Ecore_Timer *playlist_scroll_timer;
 static int playlist_scroll_top = 0;
@@ -16,6 +17,7 @@ static void _music_song_signal(void *data, Evas_Object *obj,
 		const char *signal, const char *source);
 static void _music_list_active(Evas_Object *box, Evas_Object *button);
 static void _music_song_free(Evas_Object *song);
+static void _music_scroller_set(double scroll);
 
 void music_init()
 {
@@ -30,6 +32,12 @@ void music_init()
 
 	slider = evas_object_rectangle_add(evas);
 	evas_object_color_set(slider, 10, 207, 233, 50);
+
+	//scroller = edje_object_add(evas);
+	//edje_object_file_set(scroller, theme, "button");
+	
+	scroller = evas_object_rectangle_add(evas);
+	evas_object_color_set(scroller, 10, 207, 233, 50);
 }
 
 void music_show()
@@ -39,6 +47,9 @@ void music_show()
 
 	music_slider_set(0.0);
 	evas_object_show(slider);
+	
+	_music_scroller_set(0.0);
+	evas_object_show(scroller);
 }
 
 void music_song_remove(int pos) {
@@ -109,6 +120,18 @@ void music_slider_set(double progress)
 		slide_w * progress, slide_y + slide_h * .25);
 }
 
+static void _music_scroller_set(double scroll)
+{
+	Evas_Object *area;
+	Evas_Coord slide_x, slide_y, slide_w, slide_h;
+
+	area = edje_object_part_object_get(music, "scroller");
+	evas_object_geometry_get(area, &slide_x, &slide_y, &slide_w, &slide_h);
+
+	evas_object_resize(scroller, slide_w, slide_w);
+	evas_object_move(scroller, slide_x, slide_h * scroll + slide_y);
+}
+
 void music_song_add(mpd_Song *data)
 {
 	Evas_Object *song;
@@ -175,7 +198,7 @@ void music_playlist_autoscroll(int pos, int align)
 
 	if (click_time + 30.0 < time)
 		music_playlist_scroll(pos, align, 0);
-	else if (click_time + 5.0 < time)
+	else if (click_time + 15.0 < time)
 		music_playlist_scroll(pos, 0, 0);
 }	
 
@@ -226,6 +249,8 @@ void music_playlist_scroll(int pos, int align, int force)
 		playlist_scroll_align =
 			1.0 - ((double)playlist_scroll_top / (total - view));
 	}
+	
+	_music_scroller_set((double)playlist_scroll_top / total);
 
 	if (force)
 		e_box_align_set(playlist, 0.0, playlist_scroll_align);
@@ -242,13 +267,20 @@ static void _music_signal(void *data, Evas_Object *obj, const char *signal, cons
 {
 	click_time = ecore_time_get();
 
-	if (!strcmp("up", source)) {
-		edje_object_signal_emit(obj, "up,on", "");
-		music_playlist_scroll(playlist_scroll_top-1, 1, 0);
-	}
-	else if (!strcmp("down", source)) {
-		edje_object_signal_emit(obj, "down,on", "");
-		music_playlist_scroll(playlist_scroll_top+1, 1, 0);
+	if (!strcmp("scroller", source)) {
+		Evas_Coord mouse_y, scroll_y, scroll_w, scroll_h;
+		Evas_Object *area;
+		double scroll;
+		int total;
+		
+		evas_pointer_canvas_xy_get(evas, NULL, &mouse_y);
+		area = edje_object_part_object_get(music, "scroller");
+		total = e_box_pack_count_get(playlist);
+		evas_object_geometry_get(area, NULL, &scroll_y, &scroll_w, &scroll_h);
+		
+		scroll = (double)(mouse_y - scroll_y - scroll_w/2) / scroll_h;
+
+		music_playlist_scroll(scroll * total, 1, 0);
 	}
 	else if (!strcmp("playpause", source) && playpause_playing) {
 		mpdclient_pause(1);
@@ -270,8 +302,6 @@ static int _music_scroll(void *data) {
 	if (-0.001 < diff && diff < 0.001) {
 		e_box_align_set(playlist, 0.0, playlist_scroll_align);
 		playlist_scroll_timer = NULL;
-		edje_object_signal_emit(music, "up,off", "");
-		edje_object_signal_emit(music, "down,off", "");
 		return 0;
 	}
 	else
