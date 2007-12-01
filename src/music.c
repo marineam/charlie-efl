@@ -8,6 +8,7 @@ static Evas_Object *playlist;
 static Ecore_List  *full_playlist;
 static int song_active = -99;
 static int playlist_top = 0;
+static int playlist_count = 1;
 static double click_time;
 static int playpause_playing = 0;
 
@@ -253,11 +254,14 @@ static void music_playlist_prepend(mpd_Song *data)
 
 static void music_playlist_update(mpd_Song *data)
 {
-	int count = 8, pos, len;
+	int pos, len;
 	Evas_Object *tmp, *song;
 	Evas_Coord height;
 
-	if (data->pos < playlist_top || data->pos >= playlist_top + count)
+	/* FIXME: update playlist_count */
+
+	if (data->pos < playlist_top ||
+			data->pos >= playlist_top + playlist_count)
 		return;
 
 	song = music_playlist_new(data);
@@ -301,9 +305,7 @@ static void music_playlist_remove_last()
 
 static void music_playlist_remove_nth(int pos)
 {
-	int count = 8;
-
-	if (pos < playlist_top || pos >= playlist_top + count)
+	if (pos < playlist_top || pos >= playlist_top + playlist_count)
 		return;
 
 	music_playlist_remove(
@@ -312,12 +314,12 @@ static void music_playlist_remove_nth(int pos)
 
 static void music_playlist_scroll(int top)
 {
-	int count = 8;
-
 	/* FIXME: Workaround for bug triggerd by ecore_list_remove/insert
 	 * somehow after the insert full_playlist->current and ->index
 	 * are out of sync, index is off by -1 */
 	ecore_list_first_goto(full_playlist);
+
+	/* FIXME: Update playlist_count */
 
 	if (top == playlist_top)
 		return;
@@ -338,7 +340,7 @@ static void music_playlist_scroll(int top)
 	}
 	else if (top > playlist_top) {
 		/* Scroll down */
-		for (int i = playlist_top+count; i < top+count; i++) {
+		for (int i = playlist_top+playlist_count; i < top+playlist_count; i++) {
 			mpd_Song *new;
 			new = ecore_list_index_goto(full_playlist, i);
 			music_playlist_remove_first();
