@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <Ecore_Evas.h>
+#include <Ecore_Data.h>
 #include <Ecore.h>
 #include <Edje.h>
 #include <Eet.h>

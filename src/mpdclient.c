@@ -11,7 +11,7 @@ void mpdclient_init() {
 	if (!mpdclient_connect()) {
 		mpdclient_playlist_update(NULL);
 		ecore_timer_add(1.0, mpdclient_playlist_update, NULL);
-		music_playlist_scroll(0, 1, 1);
+		//music_playlist_scroll(0, 1, 1);
 	}
 	//mpd_closeConnection(conn); put this somewhere
 }
@@ -58,19 +58,12 @@ static int mpdclient_playlist_update(void *data) {
 	mpd_nextListOkCommand(conn);
 
 	while((entity = mpd_getNextInfoEntity(conn))) {
-		mpd_Song *song;
-
 		if(entity->type!=MPD_INFO_ENTITY_TYPE_SONG) {
 			mpd_freeInfoEntity(entity);
 			continue;
 		}
 
-		if (!(song = mpd_songDup(entity->info.song))) {
-			perror(__func__);
-			exit(1);
-		}
-
-		music_song_add(song);
+		music_song_insert(entity->info.song);
 
 		mpd_freeInfoEntity(entity);
 	}
@@ -82,7 +75,6 @@ static int mpdclient_playlist_update(void *data) {
 	if(status->state == MPD_STATUS_STATE_PLAY ||
 			status->state == MPD_STATUS_STATE_PAUSE) {
 		music_song_active(status->song);
-		music_playlist_autoscroll(status->song, 4);
 		music_slider_set((double)status->elapsedTime / status->totalTime);
 	} else {
 		music_song_active(-1);
@@ -116,8 +108,8 @@ void mpdclient_pause(int state) {
 	if (status->state == MPD_STATUS_STATE_STOP &&
 			status->playlistLength > 0) {
 		mpd_sendPlayCommand(conn, 0);
-		music_song_active(0);
-		music_playlist_autoscroll(0, 1);
+		//music_song_active(0);
+		//music_playlist_autoscroll(0, 1);
 	}
 	else
 		mpd_sendPauseCommand(conn, 0);
