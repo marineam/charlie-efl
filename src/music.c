@@ -9,8 +9,9 @@ static Ecore_List  *full_playlist;
 static int song_active = -99;
 static int playlist_top = 0;
 static int playlist_count = 1;
+static Evas_Coord playlist_item_height;
 static double click_time;
-static int playpause_playing = 0;
+static int playpause_playing;
 
 static void music_signal(void *data, Evas_Object *obj,
 		const char *signal, const char *source);
@@ -178,6 +179,9 @@ static Evas_Object* music_playlist_new(mpd_Song *data)
 	edje_object_signal_callback_add(song, "mouse,clicked,1", "*",
 			music_song_signal, NULL);
 
+	if (!playlist_item_height)
+		edje_object_size_min_calc(song, NULL, &playlist_item_height);
+
 	pos = malloc(sizeof(int));
 	*pos = data->pos;
 	evas_object_data_set(song, "pos", pos);
@@ -221,34 +225,28 @@ static void music_playlist_remove(Evas_Object *song)
 static void music_playlist_append(mpd_Song *data)
 {
 	Evas_Object *song = music_playlist_new(data);
-	Evas_Coord height;
-
-	edje_object_size_min_calc(song, NULL, &height);
 
 	e_box_pack_end(playlist, song);
 	e_box_pack_options_set(song,
 			       1, 0, /* fill */
 			       1, 0, /* expand */
 			       0.5, 0.5, /* align */
-			       -1, height, /* min */
-			       -1, height); /* max */
+			       -1, playlist_item_height, /* min */
+			       -1, playlist_item_height); /* max */
 	evas_object_show(song);
 }
 
 static void music_playlist_prepend(mpd_Song *data)
 {
 	Evas_Object *song = music_playlist_new(data);
-	Evas_Coord height;
-
-	edje_object_size_min_calc(song, NULL, &height);
 
 	e_box_pack_start(playlist, song);
 	e_box_pack_options_set(song,
 			       1, 0, /* fill */
 			       1, 0, /* expand */
 			       0.5, 0.5, /* align */
-			       -1, height, /* min */
-			       -1, height); /* max */
+			       -1, playlist_item_height, /* min */
+			       -1, playlist_item_height); /* max */
 	evas_object_show(song);
 }
 
