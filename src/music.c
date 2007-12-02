@@ -19,8 +19,10 @@ static void music_song_signal(void *data, Evas_Object *obj,
 		const char *signal, const char *source);
 
 static void music_playlist_scroll(int top);
+static void music_playlist_autoscroll(int top);
 static void music_playlist_update(mpd_Song *data);
 static void music_playlist_remove_nth(int pos);
+static void music_scroller_set(double scroll);
 
 void music_init()
 {
@@ -53,8 +55,17 @@ void music_show()
 	music_slider_set(0.0);
 	evas_object_show(slider);
 
-	//_music_scroller_set(0.0);
+	music_scroller_set(0.0);
 	evas_object_show(scroller);
+
+	if (playlist_item_height) {
+		/* Recalculate how many songs can fit just in case */
+		Evas_Coord listh;
+
+		edje_object_part_geometry_get(music, "list",
+			NULL, NULL, NULL, &listh);
+		playlist_count = listh / playlist_item_height;
+	}
 }
 
 void music_song_insert(mpd_Song *song)
@@ -116,7 +127,7 @@ void music_song_active(int pos)
 	song_active = pos;
 
 	if (pos >= 0)
-		music_playlist_scroll(pos);
+		music_playlist_autoscroll(pos);
 
 	if (pos >= playlist_top || pos < playlist_top + count)
 		song = e_box_pack_object_nth(playlist, pos - playlist_top);
@@ -155,19 +166,20 @@ void music_slider_set(double progress)
 		slide_w * progress, slide_y + slide_h * .25);
 }
 
-#if 0
 static void music_scroller_set(double scroll)
 {
 	Evas_Object *area;
-	Evas_Coord slide_x, slide_y, slide_w, slide_h;
+	Evas_Coord slide_x, slide_y, slide_w, slide_h, scroller_h;
 
 	area = edje_object_part_object_get(music, "scroller");
 	evas_object_geometry_get(area, &slide_x, &slide_y, &slide_w, &slide_h);
 
-	evas_object_resize(scroller, slide_w, slide_w);
+	scroller_h = slide_h *
+		((float)playlist_count / ecore_list_count(full_playlist));
+
+	evas_object_resize(scroller, slide_w, scroller_h);
 	evas_object_move(scroller, slide_x, slide_h * scroll + slide_y);
 }
-#endif
 
 static Evas_Object* music_playlist_new(mpd_Song *data)
 {
@@ -179,8 +191,15 @@ static Evas_Object* music_playlist_new(mpd_Song *data)
 	edje_object_signal_callback_add(song, "mouse,clicked,1", "*",
 			music_song_signal, NULL);
 
-	if (!playlist_item_height)
+	if (!playlist_item_height) {
+		/* Calculate how many songs can fit if we haven't yet */
+		Evas_Coord listh;
+
 		edje_object_size_min_calc(song, NULL, &playlist_item_height);
+		edje_object_part_geometry_get(music, "list",
+			NULL, NULL, NULL, &listh);
+		playlist_count = listh / playlist_item_height;
+	}
 
 	pos = malloc(sizeof(int));
 	*pos = data->pos;
@@ -208,6 +227,9 @@ static Evas_Object* music_playlist_new(mpd_Song *data)
 	}
 	else
 		edje_object_part_text_set(song, "artist", "");
+
+	if (song_active == data->pos)
+		edje_object_signal_emit(song, "button,on", "");
 
 	return song;
 }
@@ -319,6 +341,9 @@ static void music_playlist_scroll(int top)
 
 	/* FIXME: Update playlist_count */
 
+	if (top > ecore_list_count(full_playlist) - playlist_count)
+		top = ecore_list_count(full_playlist) - playlist_count;
+
 	if (top == playlist_top)
 		return;
 	else if (top < 0) {
@@ -348,41 +373,36 @@ static void music_playlist_scroll(int top)
 	}
 
 	playlist_top = top;
+
+	music_scroller_set((double)playlist_top /
+		ecore_list_count(full_playlist));
 }
 
-
-#if 0
-void music_playlist_autoscroll(int pos, int align)
+static void music_playlist_autoscroll(int pos)
 {
 	double time = ecore_time_get();
 
 	if (click_time + 30.0 < time)
-		music_playlist_scrollxxx(pos);
-	else if (click_time + 15.0 < time)
-		music_playlist_scrollxxx(pos);
-}	
-#endif
+		music_playlist_scroll(pos);
+}
 
 static void music_signal(void *data, Evas_Object *obj, const char *signal, const char *source)
 {
 	click_time = ecore_time_get();
 
 	if (!strcmp("scroller", source)) {
-#if 0
-		Evas_Coord mouse_y, scroll_y, scroll_w, scroll_h;
+		Evas_Coord mouse_y, scroll_y, scroll_h;
 		Evas_Object *area;
-		double scroll;
-		int total;
-		
+		float scroll, range;
+		int total = ecore_list_count(full_playlist);
+
 		evas_pointer_canvas_xy_get(evas, NULL, &mouse_y);
 		area = edje_object_part_object_get(music, "scroller");
-		total = e_box_pack_count_get(playlist);
-		evas_object_geometry_get(area, NULL, &scroll_y, &scroll_w, &scroll_h);
-		
-		scroll = (double)(mouse_y - scroll_y - scroll_w/2) / scroll_h;
+		evas_object_geometry_get(area, NULL,&scroll_y,NULL,&scroll_h);
 
-		music_playlist_scroll(scroll * total, 1, 0);
-#endif
+		scroll = (float)(mouse_y - scroll_y) / scroll_h;
+
+		music_playlist_scroll((int)(scroll * total));
 	}
 	else if (!strcmp("playpause", source) && playpause_playing) {
 		mpdclient_pause(1);
