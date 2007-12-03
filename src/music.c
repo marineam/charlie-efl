@@ -1,14 +1,17 @@
 #include "main.h"
+#include <semaphore.h>
 
 static Evas_Object *music;
 static Evas_Object *slider;
 static Evas_Object *scroller;
 static Evas_Object *playlist;
-//static Ecore_Timer *playlist_scroll_timer;
 static Ecore_List  *full_playlist;
 static int song_active = -99;
-static int playlist_top = 0;
 static int playlist_count = 1;
+static int playlist_top;
+static int playlist_scroll_top;
+static float playlist_scroll_align = 0.0;
+static Ecore_Timer *playlist_scroll_timer;
 static Evas_Coord playlist_item_height;
 static double click_time;
 static int playpause_playing;
@@ -18,6 +21,7 @@ static void music_signal(void *data, Evas_Object *obj,
 static void music_song_signal(void *data, Evas_Object *obj,
 		const char *signal, const char *source);
 
+static int music_playlist_song_pos(int pos);
 static void music_playlist_scroll(int top);
 static void music_playlist_autoscroll(int top);
 static void music_playlist_update(mpd_Song *data);
@@ -34,7 +38,7 @@ void music_init()
 
 	playlist = e_box_add(evas);
 	edje_object_part_swallow(music, "list", playlist);
-	e_box_align_set(playlist, 0.0, 0.0);
+	e_box_align_set(playlist, 0.0, playlist_scroll_align);
 	evas_object_show(playlist);
 
 	slider = evas_object_rectangle_add(evas);
@@ -124,19 +128,20 @@ int music_song_count() {
 /* -1 means no song is active */
 void music_song_active(int pos)
 {
-	int count = e_box_pack_count_get(playlist);
+	int count, pls_pos;
 	Evas_Object *song = NULL;
 
 	if (pos == song_active)
 		return;
 
+	count = e_box_pack_count_get(playlist);
 	song_active = pos;
 
 	if (pos >= 0)
 		music_playlist_autoscroll(pos);
 
-	if (pos >= playlist_top || pos < playlist_top + count)
-		song = e_box_pack_object_nth(playlist, pos - playlist_top);
+	if ((pls_pos = music_playlist_song_pos(pos)) >= 0)
+		song = e_box_pack_object_nth(playlist, pls_pos);
 
 	for (int i = 0; i < count; i++) {
 		Evas_Object *tmp = e_box_pack_object_nth(playlist, i);
@@ -144,7 +149,7 @@ void music_song_active(int pos)
 			edje_object_signal_emit(tmp, "button,off", "");
 	}
 
-	if (pos >= playlist_top || pos < playlist_top + count)
+	if (song)
 		edje_object_signal_emit(song, "button,on", "");
 }
 
@@ -170,6 +175,25 @@ void music_slider_set(double progress)
 	evas_object_resize(slider, slide_h * 0.2, slide_h * 0.5);
 	evas_object_move(slider, slide_x - slide_h * 0.1 +
 		slide_w * progress, slide_y + slide_h * .25);
+}
+
+/* Get the position in the visible playlist of a given song index
+ * -1 means it is not visible */
+static int music_playlist_song_pos(int pos)
+{
+	int ret;
+	if (pos < playlist_scroll_top ||
+			pos >= playlist_scroll_top + playlist_count)
+		ret = -1;
+	else
+		ret = pos - playlist_scroll_top;
+
+	printf("playlist_scroll_top: %d, playlist_top: %d\n",
+		playlist_scroll_top, playlist_top);
+	printf("e_box_pack_count_get: %d\n",
+		e_box_pack_count_get(playlist));
+	printf("map %d to %d\n", pos, ret);
+	return ret;
 }
 
 static void music_scroll_update()
@@ -287,12 +311,10 @@ static void music_playlist_update(mpd_Song *data)
 
 	/* FIXME: update playlist_count */
 
-	if (data->pos < playlist_top ||
-			data->pos >= playlist_top + playlist_count)
+	if ((pos = music_playlist_song_pos(data->pos)) < 0)
 		return;
 
 	song = music_playlist_new(data);
-	pos = data->pos - playlist_top;
 	len = e_box_pack_count_get(playlist);
 
 	if (data->pos > len) {
@@ -332,15 +354,57 @@ static void music_playlist_remove_last()
 
 static void music_playlist_remove_nth(int pos)
 {
-	if (pos < playlist_top || pos >= playlist_top + playlist_count)
-		return;
+	int pls_pos = music_playlist_song_pos(pos);
 
-	music_playlist_remove(
-		e_box_pack_object_nth(playlist, pos - playlist_top));
+	if (pls_pos >= 0)
+		music_playlist_remove(e_box_pack_object_nth(playlist, pls_pos));
+
+	/* FIXME: can this get called on playlist_top? */
+}
+
+static int music_playlist_scroll_helper(void *data) {
+	double diff, curr;
+	int ret;
+
+	e_box_align_get(playlist, NULL, &curr);
+
+	diff = playlist_scroll_align - curr;
+
+	if (-0.001 < diff && diff < 0.001) {
+		curr = 0.0;
+		ret = 0;
+		playlist_scroll_timer = NULL;
+
+		for (int i = playlist_scroll_top; i < playlist_top; i++) {
+			printf("remove_first\n");
+			music_playlist_remove_first();
+		}
+		for (int i = e_box_pack_count_get(playlist);
+				i > playlist_count; i--) {
+			printf("remove_last\n");
+			music_playlist_remove_last();
+		}
+		printf("playlist_top: %d, playlist_scroll_top: %d\n",
+			playlist_top, playlist_scroll_top);
+		playlist_scroll_top = playlist_top;
+	}
+	else {
+		ret = 1;
+		//curr = curr * 0.7 + playlist_scroll_align * 0.3;
+		curr = curr * 0.9 + playlist_scroll_align * 0.1;
+	}
+
+	printf("scroll diff: %lf, new: %lf, ret: %d\n", diff, curr, ret);
+	e_box_align_set(playlist, 0.0, curr);
+
+	return ret;
 }
 
 static void music_playlist_scroll(int top)
 {
+	double old_scroll_align;
+	int extra;
+
 	/* FIXME: Workaround for bug triggerd by ecore_list_remove/insert
 	 * somehow after the insert full_playlist->current and ->index
 	 * are out of sync, index is off by -1 */
@@ -356,36 +420,60 @@ static void music_playlist_scroll(int top)
 	if (top == playlist_top)
 		return;
 	else if (top < playlist_top) {
+		playlist_scroll_top = playlist_top;
 		/* Scroll up */
 		for (int i = playlist_top-1; i >= top; i--) {
 			mpd_Song *new;
 			/* FIXME: The following will rescan the beginning */
 			new = ecore_list_index_goto(full_playlist, i);
-			music_playlist_remove_last();
-			if (new)
+			if (new) {
 				music_playlist_prepend(new);
+				playlist_scroll_top--;
+			}
 		}
 	}
 	else if (top > playlist_top) {
+		playlist_scroll_top = playlist_top;
 		/* Scroll down */
 		for (int i = playlist_top+playlist_count; i < top+playlist_count; i++) {
 			mpd_Song *new;
+
 			new = ecore_list_index_goto(full_playlist, i);
-			music_playlist_remove_first();
-			if (new)
+			if (new) {
 				music_playlist_append(new);
+			}
 		}
+		e_box_align_set(playlist, 0.0, 1.0);
 	}
 
 	playlist_top = top;
 	music_scroll_update();
+
+	/* Update smooth scrolling alignment */
+	e_box_align_get(playlist, NULL, &old_scroll_align);
+	extra = e_box_pack_count_get(playlist) - playlist_count;
+	if (extra)
+		playlist_scroll_align = 1.0 -
+			((float)(playlist_top - playlist_scroll_top) / extra);
+	else
+		playlist_scroll_align = 0.0;
+
+	printf("playlist_top: %d, playlist_scroll_top: %d\n",
+		playlist_top, playlist_scroll_top);
+	printf("scroll: %f\n", playlist_scroll_align);
+
+	//if (!playlist_scroll_timer &&
+	//		old_scroll_align != playlist_scroll_align)
+	if (!playlist_scroll_timer)
+		playlist_scroll_timer = ecore_timer_add(1.0 / 30.0,
+			music_playlist_scroll_helper, NULL);
 }
 
 static void music_playlist_autoscroll(int pos)
 {
 	double time = ecore_time_get();
 
-	if (click_time + 30.0 < time)
+	//if (click_time + 30.0 < time)
 		music_playlist_scroll(pos);
 }
 
