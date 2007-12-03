@@ -20,22 +20,19 @@ int main()
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, main_signal_exit,
 				NULL);
 
-	ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, WIDTH, HEIGHT);
+	ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 640, 480);
 	ecore_evas_callback_resize_set(ecore_evas, main_resize);
 	ecore_evas_title_set(ecore_evas, "Charlie!");
-	ecore_evas_borderless_set(ecore_evas, 0);
 	ecore_evas_show(ecore_evas);
-
 	evas = ecore_evas_get(ecore_evas);
-
-	evas_font_path_append(evas, DATA "/fonts");
 
 	layout_init();
 	music_init();
 
-	main_menu_add("Music Library", 1);
-	main_menu_add("Radio", 0);
-	main_menu_add("Status", 0);
+	main_menu_add("Playlist", 1);
+	main_menu_add("Library", 0);
+	//main_menu_add("Radio", 0);
+	//main_menu_add("Status", 0);
 
 	music_show();
 	mpdclient_init();
@@ -51,6 +48,7 @@ int main()
 static void main_resize(Ecore_Evas *ee)
 {
 	layout_resize();
+	music_resize();
 }
 
 

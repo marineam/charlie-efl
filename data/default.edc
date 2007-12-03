@@ -18,6 +18,7 @@ collections {
 
   group {
     name: "layout";
+    min: 800 480;
     parts {
       part {
         name: "background";

@@ -57,14 +57,18 @@ void music_show()
 
 	music_scroll_update();
 	evas_object_show(scroller);
+}
 
+void music_resize()
+{
 	if (playlist_item_height) {
-		/* Recalculate how many songs can fit just in case */
 		Evas_Coord listh;
 
 		edje_object_part_geometry_get(music, "list",
 			NULL, NULL, NULL, &listh);
 		playlist_count = listh / playlist_item_height;
+
+		/* TODO: actually do something to resize the playlist */
 	}
 }
 

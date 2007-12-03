@@ -13,12 +13,9 @@
 #include "music.h"
 #include "mpdclient.h"
 
-#define WIDTH 800
-#define HEIGHT 600
 #define DATA "/home/marineam/e/music/data"
 #define DEF_THEME "default.edj"
 #define theme DATA "/" DEF_THEME
 
 extern Ecore_Evas *ecore_evas;
 extern Evas *evas;
-
