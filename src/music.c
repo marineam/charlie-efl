@@ -188,11 +188,6 @@ static int music_playlist_song_pos(int pos)
 	else
 		ret = pos - playlist_scroll_top;
 
-	printf("playlist_scroll_top: %d, playlist_top: %d\n",
-		playlist_scroll_top, playlist_top);
-	printf("e_box_pack_count_get: %d\n",
-		e_box_pack_count_get(playlist));
-	printf("map %d to %d\n", pos, ret);
 	return ret;
 }
 
@@ -376,16 +371,12 @@ static int music_playlist_scroll_helper(void *data) {
 		playlist_scroll_timer = NULL;
 
 		for (int i = playlist_scroll_top; i < playlist_top; i++) {
-			printf("remove_first\n");
 			music_playlist_remove_first();
 		}
 		for (int i = e_box_pack_count_get(playlist);
 				i > playlist_count; i--) {
-			printf("remove_last\n");
 			music_playlist_remove_last();
 		}
-		printf("playlist_top: %d, playlist_scroll_top: %d\n",
-			playlist_top, playlist_scroll_top);
 		playlist_scroll_top = playlist_top;
 	}
 	else {
@@ -394,7 +385,6 @@ static int music_playlist_scroll_helper(void *data) {
 		curr = curr * 0.9 + playlist_scroll_align * 0.1;
 	}
 
-	printf("scroll diff: %lf, new: %lf, ret: %d\n", diff, curr, ret);
 	e_box_align_set(playlist, 0.0, curr);
 
 	return ret;
@@ -458,12 +448,6 @@ static void music_playlist_scroll(int top)
 	else
 		playlist_scroll_align = 0.0;
 
-	printf("playlist_top: %d, playlist_scroll_top: %d\n",
-		playlist_top, playlist_scroll_top);
-	printf("scroll: %f\n", playlist_scroll_align);
-
-	//if (!playlist_scroll_timer &&
-	//		old_scroll_align != playlist_scroll_align)
 	if (!playlist_scroll_timer)
 		playlist_scroll_timer = ecore_timer_add(1.0 / 30.0,
 			music_playlist_scroll_helper, NULL);
