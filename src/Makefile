@@ -1,9 +1,10 @@
 CC	= gcc
 CFLAGS  = -ggdb -Wall -std=gnu99
-LIBS    = -lecore -lecore_evas -ledje -leet
+LIBS    = -lecore -lecore_evas -ledje
 LLIBS	= lib/libmpdclient/libmpdclient.o lib/e/e_box.o
-HEAD	= *.h
-OBJ	= layout.o music.o mpdclient.o
+HEAD	= layout.h main.h mpdclient.h music.h
+SRC	= layout.c main.c mpdclient.c music.c
+OBJ	= $(SRC:.c=.o)
 
 all: main
 
@@ -14,8 +15,8 @@ lib-stamp:
 	$(MAKE) CFLAGS="$(CFLAGS)" -C lib
 	touch lib-stamp
 
-main: $(OBJ) $(HEAD) lib-stamp main.c
-	$(CC) $(CFLAGS) $(LIBS) -o main main.c $(OBJ) $(LLIBS)
+main: $(OBJ) $(HEAD) lib-stamp
+	$(CC) $(CFLAGS) $(LIBS) -o main $(OBJ) $(LLIBS)
 
 clean:
 	$(MAKE) -C lib clean

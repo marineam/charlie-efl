@@ -5,7 +5,6 @@
 #include <Ecore_Data.h>
 #include <Ecore.h>
 #include <Edje.h>
-#include <Eet.h>
 
 #include "lib/e/e_box.h"
 #include "lib/libmpdclient/libmpdclient.h"
@@ -16,6 +15,12 @@
 #define DATA "/home/marineam/e/music/data"
 #define DEF_THEME "default.edj"
 #define theme DATA "/" DEF_THEME
+
+#define check(f) do { \
+	if (!(f)) { \
+		fprintf(stderr, "Failed at %s:%d\n", __FILE__, __LINE__); \
+		exit(1); \
+	} } while(0)
 
 extern Ecore_Evas *ecore_evas;
 extern Evas *evas;

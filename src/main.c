@@ -9,18 +9,15 @@ static void main_menu_add(const char* label, int active);
 
 int main()
 {
-	eet_init();
-	ecore_init();
-	edje_init();
-	if (!ecore_evas_init()) {
-		fprintf(stderr, "Error: cannot init ecore_evas\n");
-		return 1;
-	}
+	check(ecore_init());
+	check(ecore_evas_init());
+	check(edje_init());
 
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, main_signal_exit,
 				NULL);
 
 	ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 640, 480);
+	check(ecore_evas);
 	ecore_evas_callback_resize_set(ecore_evas, main_resize);
 	ecore_evas_title_set(ecore_evas, "Charlie!");
 	ecore_evas_show(ecore_evas);
@@ -41,7 +38,6 @@ int main()
 
 	ecore_evas_shutdown();
 	ecore_shutdown();
-	eet_shutdown();
 	return 0;
 }
 
