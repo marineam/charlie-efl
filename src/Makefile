@@ -2,8 +2,8 @@ CC	= gcc
 CFLAGS  = -ggdb -Wall -std=gnu99
 LIBS    = -lecore -lecore_evas -ledje
 LLIBS	= lib/libmpdclient/libmpdclient.o lib/e/e_box.o
-HEAD	= layout.h main.h mpdclient.h music.h
-SRC	= layout.c main.c mpdclient.c music.c
+HEAD	= layout.h main.h mpdclient.h music.h scrollbox.h
+SRC	= layout.c main.c mpdclient.c music.c scrollbox.c
 OBJ	= $(SRC:.c=.o)
 
 all: main

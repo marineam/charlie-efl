@@ -1,3 +1,5 @@
+#include "../config.h"
+
 fonts {
   font: "Vera.ttf"   "Edje-Vera";
   font: "VeraBd.ttf" "Edje-Vera-Bold";
@@ -18,7 +20,7 @@ collections {
 
   group {
     name: "layout";
-    min: 800 480;
+    min: WIDTH HEIGHT;
     parts {
       part {
         name: "background";

@@ -6,11 +6,13 @@
 #include <Ecore.h>
 #include <Edje.h>
 
+#include "../config.h"
 #include "lib/e/e_box.h"
 #include "lib/libmpdclient/libmpdclient.h"
 #include "layout.h"
 #include "music.h"
 #include "mpdclient.h"
+#include "scrollbox.h"
 
 #define DATA "/home/marineam/e/music/data"
 #define DEF_THEME "default.edj"
