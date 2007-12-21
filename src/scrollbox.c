@@ -8,6 +8,7 @@ static void scrollbox_view_update(Evas_Object *box,
 	struct scrollbox_item *item);
 static void scrollbox_scroll(Evas_Object *box, int top);
 static void scrollbox_autoscroll(Evas_Object *box, int pos);
+static void scrollbox_signal(void *data, Evas *evas, Evas_Object *obj, void *event_info);
 
 Evas_Object* scrollbox_new()
 {
@@ -19,18 +20,24 @@ Evas_Object* scrollbox_new()
 
 	box = evas_object_rectangle_add(evas);
 	evas_object_data_set(box, "scrollbox", boxinfo);
+	evas_object_event_callback_add(box, EVAS_CALLBACK_MOUSE_DOWN,
+		scrollbox_signal, box);
 
 	boxinfo->active = -2;
 	boxinfo->list = ecore_list_new();
+	boxinfo->base_box = evas_object_rectangle_add(evas);
 	boxinfo->scroll_box = e_box_add(evas);
 	boxinfo->scroll_bar = evas_object_rectangle_add(evas);
+	evas_object_event_callback_add(boxinfo->scroll_bar,
+		EVAS_CALLBACK_MOUSE_DOWN, scrollbox_signal, box);
 
-	evas_object_clip_set(boxinfo->scroll_box, box);
-	evas_object_clip_set(boxinfo->scroll_bar, box);
+	evas_object_clip_set(boxinfo->scroll_box, boxinfo->base_box);
+	evas_object_show(boxinfo->base_box);
 	evas_object_show(boxinfo->scroll_box);
 	evas_object_show(boxinfo->scroll_bar);
 
 	e_box_align_set(boxinfo->scroll_box, 0.0, 0.0);
+	evas_object_color_set(box, 255, 255, 255, 0);
 	evas_object_color_set(boxinfo->scroll_bar, 10, 207, 233, 50);
 
 	return box;
@@ -44,8 +51,10 @@ void scrollbox_show(Evas_Object *box)
 	boxinfo = evas_object_data_get(box, "scrollbox");
 
 	evas_object_geometry_get(box, &x, &y, &w, &h);
+	evas_object_move(boxinfo->base_box, x, y);
 	evas_object_move(boxinfo->scroll_box, x, y);
-	evas_object_resize(boxinfo->scroll_box, w - UNIT, h);
+	evas_object_resize(boxinfo->base_box, w - UNIT, h - h % UNIT);
+	evas_object_resize(boxinfo->scroll_box, w - UNIT, h - h % UNIT);
 	scrollbox_bar_update(box);
 
 	evas_object_show(box);
@@ -197,6 +206,8 @@ static void scrollbox_bar_update(Evas_Object *box)
 
 	boxinfo = evas_object_data_get(box, "scrollbox");
 	evas_object_geometry_get(box, &x, &y, &w, &h);
+	x = x + w - UNIT;
+	h = h - h % UNIT;
 
 	view_count = scrollbox_view_count(box);
 	list_count = ecore_list_count(boxinfo->list);
@@ -209,7 +220,7 @@ static void scrollbox_bar_update(Evas_Object *box)
 		bar_y = y;
 	}
 
-	evas_object_move(boxinfo->scroll_bar, x + w - UNIT, bar_y);
+	evas_object_move(boxinfo->scroll_bar, x, bar_y);
 	evas_object_resize(boxinfo->scroll_bar, UNIT, bar_h);
 }
 
@@ -227,7 +238,7 @@ static void scrollbox_view_remove(Evas_Object *item_view)
 	item->destroy(item_view);
 }
 
-static void scrollbox_view_append(struct scrollbox *boxinfo,
+static Evas_Object* scrollbox_view_append(struct scrollbox *boxinfo,
 	struct scrollbox_item *item)
 {
 	Evas_Object *item_view;
@@ -242,9 +253,11 @@ static void scrollbox_view_append(struct scrollbox *boxinfo,
 			       -1, UNIT, /* min */
 			       -1, UNIT); /* max */
 	evas_object_show(item_view);
+
+	return item_view;
 }
 
-static void scrollbox_view_prepend(struct scrollbox *boxinfo,
+static Evas_Object* scrollbox_view_prepend(struct scrollbox *boxinfo,
 	struct scrollbox_item *item)
 {
 	Evas_Object *item_view;
@@ -259,6 +272,8 @@ static void scrollbox_view_prepend(struct scrollbox *boxinfo,
 			       -1, UNIT, /* min */
 			       -1, UNIT); /* max */
 	evas_object_show(item_view);
+
+	return item_view;
 }
 
 static void scrollbox_view_update(Evas_Object *box, struct scrollbox_item *item)
@@ -334,7 +349,7 @@ static void scrollbox_view_remove_nth(Evas_Object *box, int pos)
 static int scrollbox_scroll_helper(void *box) {
 	struct scrollbox *boxinfo;
 	double diff, curr;
-	int ret;
+	int ret, view_count;
 
 	boxinfo = evas_object_data_get(box, "scrollbox");
 
@@ -346,12 +361,13 @@ static int scrollbox_scroll_helper(void *box) {
 		curr = 0.0;
 		ret = 0;
 		boxinfo->scroll_timer = NULL;
+		view_count = scrollbox_view_count(box);
 
 		for (int i = boxinfo->scroll_top; i < boxinfo->top; i++) {
 			scrollbox_view_remove_first(boxinfo);
 		}
 		for (int i = e_box_pack_count_get(boxinfo->scroll_box);
-				i > scrollbox_item_count(box); i--) {
+				i > view_count; i--) {
 			scrollbox_view_remove_last(boxinfo);
 		}
 		boxinfo->scroll_top = boxinfo->top;
@@ -370,11 +386,12 @@ static void scrollbox_scroll(Evas_Object *box, int top)
 {
 	struct scrollbox *boxinfo;
 	double old_scroll_align;
-	int extra, max_top;
+	int extra, max_top, view_count;
 
 	boxinfo = evas_object_data_get(box, "scrollbox");
+	view_count = scrollbox_view_count(box);
 
-	max_top = ecore_list_count(boxinfo->list) - scrollbox_item_count(box);
+	max_top = ecore_list_count(boxinfo->list) - view_count;
 	if (top > max_top)
 		top = max_top;
 	else if (top < 0)
@@ -387,26 +404,31 @@ static void scrollbox_scroll(Evas_Object *box, int top)
 		/* Scroll up */
 		for (int i = boxinfo->top-1; i >= top; i--) {
 			struct scrollbox_item *new;
+			Evas_Object *view;
 
 			/* FIXME: The following will rescan the beginning */
 			new = ecore_list_index_goto(boxinfo->list, i);
 			if (new) {
-				scrollbox_view_prepend(boxinfo, new);
+				view = scrollbox_view_prepend(boxinfo, new);
 				boxinfo->scroll_top--;
+				if (i == boxinfo->active)
+					new->active(view, 1);
 			}
 		}
 	}
 	else if (top > boxinfo->top) {
 		boxinfo->scroll_top = boxinfo->top;
 		/* Scroll down */
-		for (int i = boxinfo->top + scrollbox_item_count(box);
-				i < top + scrollbox_item_count(box); i++) {
-			/* fixme? called scrollbox_item_count twice? */
+		for (int i = boxinfo->top + view_count;
+				i < top + view_count; i++) {
 			struct scrollbox_item *new;
+			Evas_Object *view;
 
 			new = ecore_list_index_goto(boxinfo->list, i);
 			if (new) {
 				scrollbox_view_append(boxinfo, new);
+				if (i == boxinfo->active)
+					new->active(view, 1);
 			}
 		}
 		e_box_align_set(boxinfo->scroll_box, 0.0, 1.0);
@@ -417,8 +439,7 @@ static void scrollbox_scroll(Evas_Object *box, int top)
 
 	/* Update smooth scrolling alignment */
 	e_box_align_get(boxinfo->scroll_box, NULL, &old_scroll_align);
-	extra = e_box_pack_count_get(boxinfo->scroll_box) -
-		scrollbox_item_count(box);
+	extra = e_box_pack_count_get(boxinfo->scroll_box) - view_count;
 	if (extra)
 		boxinfo->scroll_align = 1.0 -
 			((double)(boxinfo->top - boxinfo->scroll_top) / extra);
@@ -432,40 +453,28 @@ static void scrollbox_scroll(Evas_Object *box, int top)
 
 static void scrollbox_autoscroll(Evas_Object *box, int pos)
 {
-	/* FIXME: implement clicktime */
-	//double time = ecore_time_get();
+	double time = ecore_time_get();
 
-	//if (click_time + 30.0 < time)
+	if (click_time + 30.0 < time)
 		scrollbox_scroll(box, pos);
 }
 
-#if 0
-static void scrollbox_signal(void *data, Evas_Object *obj, const char *signal, const char *source)
+static void scrollbox_signal(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 {
-	//click_time = ecore_time_get();
+	struct scrollbox *boxinfo;
+	Evas_Object *box = data;
+	Evas_Coord mouse_y, scroll_y, scroll_h, scroller_h;
+	double scroll;
 
-	if (!strcmp("scroller", source)) {
-		Evas_Coord mouse_y, scroll_y, scroll_h, scroller_h;
-		Evas_Object *area;
-		float scroll;
-		int total = ecore_list_count(full_playlist);
+	click_time = ecore_time_get();
+	boxinfo = evas_object_data_get(box, "scrollbox");
 
-		evas_pointer_canvas_xy_get(evas, NULL, &mouse_y);
-		area = edje_object_part_object_get(music, "scroller");
-		evas_object_geometry_get(area, NULL,&scroll_y,NULL,&scroll_h);
+	evas_pointer_canvas_xy_get(evas, NULL, &mouse_y);
+	evas_object_geometry_get(boxinfo->scroll_bar,
+		NULL, NULL, NULL, &scroller_h);
+	evas_object_geometry_get(box, NULL, &scroll_y, NULL, &scroll_h);
 
-		scroller_h = scroll_h * ((float)playlist_count / total);
-		scroll = (float)(mouse_y - scroll_y - scroller_h/2)/ scroll_h;
+	scroll = (double)(mouse_y - scroll_y - scroller_h/2)/ scroll_h;
 
-		music_playlist_scroll((int)(scroll * total));
-	}
-	else if (!strcmp("playpause", source) && playpause_playing) {
-		mpdclient_pause(1);
-		music_playing(0);
-	}
-	else if (!strcmp("playpause", source)) {
-		mpdclient_pause(0);
-		music_playing(1);
-	}
+	scrollbox_scroll(box, (int)(scroll * ecore_list_count(boxinfo->list)));
 }
-#endif

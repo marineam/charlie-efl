@@ -1,10 +1,8 @@
 #include "main.h"
-#include <semaphore.h>
 
 static Evas_Object *music;
 static Evas_Object *slider;
 static Evas_Object *playlist;
-//static double click_time;
 static int playpause_playing;
 
 static Evas_Object* song_create(void *vdata);
@@ -170,22 +168,24 @@ static void song_free(struct scrollbox_item *song)
 	free(song);
 }
 
-static void song_signal(void *data, Evas_Object *obj, const char *signal, const char *source) {
+static void song_signal(void *data, Evas_Object *obj, const char *signal, const char *source)
+{
 	int *pos = evas_object_data_get(obj, "pos");
+
+	click_time = ecore_time_get();
 
 	if (!pos) {
 		fprintf(stderr, "%s: missing song position!", __func__);
 		return;
 	}
 
-	//click_time = ecore_time_get();
 	music_song_active(*pos);
 	mpdclient_song_play(*pos);
 }
 
 static void music_signal(void *data, Evas_Object *obj, const char *signal, const char *source)
 {
-	//click_time = ecore_time_get();
+	click_time = ecore_time_get();
 
 	if (!strcmp("playpause", source) && playpause_playing) {
 		mpdclient_pause(1);

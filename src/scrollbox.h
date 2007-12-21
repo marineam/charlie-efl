@@ -8,6 +8,8 @@ struct scrollbox {
 	Ecore_Timer *scroll_timer;
 	Evas_Object *scroll_box;
 	Evas_Object *scroll_bar;
+	Evas_Object *base_box;
+	Evas_Object *base_bar;
 	Ecore_List *list;
 };
 

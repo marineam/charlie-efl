@@ -2,6 +2,7 @@
 
 Ecore_Evas *ecore_evas;
 Evas *evas;
+double click_time;
 
 static int main_signal_exit(void *data, int ev_type, void *ev);
 static void main_resize(Ecore_Evas *ee);
@@ -58,6 +59,8 @@ static void main_menu_signal(void *data, Evas_Object *obj, const char *signal, c
 	Evas_Object *box = (Evas_Object *)data, *button;
 	int n, count;
 
+	click_time = ecore_time_get();
+
 	count = e_box_pack_count_get(box);
 	for (n = 0; n < count; n++) {
 		button = e_box_pack_object_nth(box, n);
@@ -93,10 +96,9 @@ static void main_menu_add(const char* label, int active)
 			       0.5, 0.5, /* align */
 			       -1, -1, /* min */
 			       -1, -1); /* max */
-	
+
 	if (active)
 		main_menu_signal(box, button, NULL, NULL);
-	
+
 	evas_object_show(button);
 }
-

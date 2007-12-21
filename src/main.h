@@ -26,3 +26,4 @@
 
 extern Ecore_Evas *ecore_evas;
 extern Evas *evas;
+extern double click_time;
