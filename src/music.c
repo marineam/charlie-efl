@@ -33,7 +33,6 @@ void music_show()
 	layout_swallow("main_content", music);
 	evas_object_show(music);
 
-	music_slider_set(0.0);
 	evas_object_show(slider);
 
 	scrollbox_show(playlist);
@@ -78,7 +77,7 @@ int music_song_count() {
 }
 
 /* -1 means no song is active */
-void music_song_active(int pos)
+void music_song_update(int pos, int time)
 {
 	scrollbox_item_active(playlist, pos);
 }
@@ -92,19 +91,6 @@ void music_playing(int state) {
 		edje_object_signal_emit(music, "play", "");
 	else
 		edje_object_signal_emit(music, "pause", "");
-}
-
-void music_slider_set(double progress)
-{
-	Evas_Object *area;
-	Evas_Coord slide_x, slide_y, slide_w, slide_h;
-
-	area = edje_object_part_object_get(music, "slider");
-	evas_object_geometry_get(area, &slide_x, &slide_y, &slide_w, &slide_h);
-
-	evas_object_resize(slider, slide_h * 0.2, slide_h * 0.5);
-	evas_object_move(slider, slide_x - slide_h * 0.1 +
-		slide_w * progress, slide_y + slide_h * .25);
 }
 
 static Evas_Object* song_create(void *vdata)
@@ -179,20 +165,11 @@ static void song_signal(void *data, Evas_Object *obj, const char *signal, const 
 		return;
 	}
 
-	music_song_active(*pos);
+	scrollbox_item_active(playlist, *pos);
 	mpdclient_song_play(*pos);
 }
 
 static void music_signal(void *data, Evas_Object *obj, const char *signal, const char *source)
 {
 	click_time = ecore_time_get();
-
-	if (!strcmp("playpause", source) && playpause_playing) {
-		mpdclient_pause(1);
-		music_playing(0);
-	}
-	else if (!strcmp("playpause", source)) {
-		mpdclient_pause(0);
-		music_playing(1);
-	}
 }

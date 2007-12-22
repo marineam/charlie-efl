@@ -2,4 +2,7 @@
 
 #define WIDTH 800
 #define HEIGHT 480
-#define UNIT 50
+#define UNIT 48
+#define PAD 5
+#define SIDEBAR (UNIT*5)
+#define SCROLLBAR (UNIT*0.8)

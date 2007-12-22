@@ -456,7 +456,7 @@ static void scrollbox_scroll(Evas_Object *box, int top)
 		boxinfo->scroll_timer = ecore_timer_add(1.0 / 15.0,
 			scrollbox_scroll_helper, box);
 	}
-	
+
 	e_box_thaw(boxinfo->scroll_box);
 }
 

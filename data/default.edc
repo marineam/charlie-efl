@@ -41,35 +41,110 @@ collections {
         }
       }
       part {
+        name: "playpause";
+        description {
+          state: "default" 0.0;
+          aspect: 0.91 0.91;
+          image {
+            normal: "play.png";
+          }
+          rel1 {
+            relative: 0.0 0.0;
+            offset: PAD PAD;
+          }
+          rel2 {
+            relative: 0.0 0.0;
+            offset: (UNIT - PAD) (UNIT - PAD);
+          }
+          color: 235 245 255 200;
+        }
+        description {
+          state: "play" 0.0;
+          aspect: 0.75 0.75;
+          image {
+            normal: "pause.png";
+          }
+          inherit: "default" 0.0;
+        }
+        description {
+          state: "pause" 0.0;
+          inherit: "default" 0.0;
+        }
+      }
+      part {
+        name: "volume";
+        type: RECT;
+        description {
+          state: "default" 0.0;
+          rel1 {
+            relative: 0.0 0.0;
+            offset: 0 UNIT;
+          }
+          rel2 {
+            relative: 0.0 1.0;
+            offset: UNIT (2*-UNIT);
+          }
+          color: 255 255 255 0;
+        }
+      }
+      part {
+        name: "vol_label";
+        type: TEXT;
+        effect: NONE;
+        description {
+          state: "default" 0.0;
+          rel1 {
+            relative: 0.0 1.0;
+            offset: PAD ((2*-UNIT)-PAD);
+          }
+          rel2 {
+            relative: 0.0 1.0;
+            offset: (UNIT-PAD) (1.8*-UNIT);
+          }
+          text {
+            text: "Vol";
+            font: "Edje-Vera-Bold";
+            fit: 1 1;
+            size: 12;
+          }
+          color: 235 245 255 200;
+        }
+      }
+      part {
+        name: "time";
+        type: TEXT;
+        effect: NONE;
+        description {
+          state: "default" 0.0;
+          rel1 {
+            relative: 0.0 1.0;
+            offset: PAD ((1.8*-UNIT)-PAD);
+          }
+          rel2 {
+            relative: 0.0 1.0;
+            offset: (SIDEBAR-PAD) (-UNIT+PAD);
+          }
+          text {
+            text: "12:00 PM, Dec 31";
+            font: "Edje-Vera-Bold";
+            fit: 1 1;
+            size: 12;
+          }
+          color: 235 245 255 200;
+        }
+      }
+      part {
         name: "main_content";
         type: SWALLOW;
         description {
           state: "default" 0.0;
           rel1 {
             relative: 0.0 0.0;
+            offset: UNIT 0;
           }
           rel2 {
-            relative: 1.0 0.9;
-          }
-        }
-      }
-      part {
-        name: "background_menu";
-        mouse_events: 0;
-        description {
-          state: "default" 0.0;
-          aspect_preference: NONE;
-          aspect: 17.7777778 17.7777778;
-          rel1 {
-            to: background;
-            relative: 0.0 0.9;
-          }
-          rel2 {
-            to: background;
             relative: 1.0 1.0;
-          }
-          image {
-             normal: "bg-menu.png";
+            offset: 0 -UNIT;
           }
         }
       }
@@ -79,7 +154,8 @@ collections {
         description {
           state: "default" 0.0;
           rel1 {
-            relative: 0.0 0.9;
+            relative: 0.0 1.0;
+            offset: 0 -UNIT;
           }
           rel2 {
             relative: 1.0 1.0;
@@ -87,8 +163,26 @@ collections {
         }
       }
     }
+    programs {
+      program {
+        name: "playpause_play";
+        signal: "play";
+        source: "";
+        action: STATE_SET "play" 0.0;
+        transition: SINUSOIDAL 0.2;
+        target: "playpause";
+      }
+      program {
+        name: "playpause_pause";
+        signal: "pause";
+        source: "";
+        action: STATE_SET "pause" 0.0;
+        transition: SINUSOIDAL 0.2;
+        target: "playpause";
+      }
+    }
   }
-  
+
   group {
     name: "menu_item";
     parts {
@@ -202,116 +296,12 @@ collections {
           state: "default" 0.0;
           rel1 {
             relative: 0.0 0.0;
-          }
-          rel2 {
-            relative: 1.0 0.888888888888889;
-          }
-        }
-      }
-      part {
-        name: "status";
-        description {
-          state: "default" 0.0;
-          aspect_preference: NONE;
-          aspect: 17.7777778 17.7777778;
-          rel1 {
-            relative: 0.0 0.888888888888889;
+            offset: SIDEBAR-UNIT 0;
           }
           rel2 {
             relative: 1.0 1.0;
           }
-          image {
-            normal: "bg-status.png";
-          }
         }
-      }
-      part {
-        name: "playpause";
-        description {
-          state: "default" 0.0;
-          aspect: 0.91 0.91;
-          align: 0.0 0.5;
-          image {
-            normal: "play.png";
-          }
-          rel1 {
-            to_y: status;
-            relative: 0.0 0.1;
-            offset: 5 0;
-          }
-          rel2 {
-            to_y: status;
-            relative: 0.001 0.9;
-            offset: 5 0;
-          }
-          color: 235 245 255 200;
-        }
-        description {
-          state: "play" 0.0;
-          aspect: 0.75 0.75;
-          image {
-            normal: "pause.png";
-          }
-          inherit: "default" 0.0;
-        }
-        description {
-          state: "pause" 0.0;
-          inherit: "default" 0.0;
-        }
-      }
-      part {
-        name: "slidebar";
-        type: RECT;
-        description {
-          state: "default" 0.0;
-          rel1 {
-            to: status;
-            relative: 0.2 0.5;
-            offset: 0 -1;
-          }
-          rel2 {
-            to: status;
-            relative: 0.8 0.5;
-            offset: 0 1;
-          }
-          color: 235 245 255 200;
-        }
-      }
-      part {
-        name: "slider";
-        type: RECT;
-        description {
-          state: "default" 0.0;
-          visible: 0;
-          rel1 {
-            to_x: slidebar;
-            to_y: status;
-            relative: 0.0 0.1;
-          }
-          rel2 {
-            to_x: slidebar;
-            to_y: status;
-            relative: 1.0 0.9;
-          }
-        }
-      }
-    }
-    programs {
-      program {
-        name: "playpause_play";
-        signal: "play";
-        source: "";
-        action: STATE_SET "play" 0.0;
-        transition: SINUSOIDAL 0.2;
-        target: "playpause";
-      }
-      program {
-        name: "playpause_pause";
-        signal: "pause";
-        source: "";
-        action: STATE_SET "pause" 0.0;
-        transition: SINUSOIDAL 0.2;
-        target: "playpause";
       }
     }
   }

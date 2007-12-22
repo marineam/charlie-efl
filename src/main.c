@@ -17,7 +17,7 @@ int main()
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, main_signal_exit,
 				NULL);
 
-	ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 640, 480);
+	ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, WIDTH, HEIGHT);
 	check(ecore_evas);
 	ecore_evas_callback_resize_set(ecore_evas, main_resize);
 	ecore_evas_title_set(ecore_evas, "Charlie!");

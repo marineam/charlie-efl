@@ -72,16 +72,14 @@ static int mpdclient_playlist_update(void *data) {
 		music_song_remove(i);
 	}
 
-	if(status->state == MPD_STATUS_STATE_PLAY ||
+	if (status->state == MPD_STATUS_STATE_PLAY ||
 			status->state == MPD_STATUS_STATE_PAUSE) {
-		music_song_active(status->song);
-		music_slider_set((double)status->elapsedTime / status->totalTime);
+		music_song_update(status->song, status->totalTime);
 	} else {
-		music_song_active(-1);
-		music_slider_set(0.0);
+		music_song_update(-1, 0);
 	}
 
-	music_playing(status->state == MPD_STATUS_STATE_PLAY);
+	layout_update(status->state == MPD_STATUS_STATE_PLAY, status->volume);
 
 	mpd_finishCommand(conn);
 	mpd_freeStatus(status);
@@ -113,6 +111,13 @@ void mpdclient_pause(int state) {
 	}
 	else
 		mpd_sendPauseCommand(conn, 0);
-	
+
 	mpd_finishCommand(conn);
 }
+
+void mpdclient_volume(int vol)
+{
+	mpd_sendSetvolCommand(conn, vol);
+	mpd_finishCommand(conn);
+}
+
