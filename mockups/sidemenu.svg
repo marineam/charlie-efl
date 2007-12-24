@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="800"
+   height="480"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   version="1.0"
+   sodipodi:docbase="/home/marineam/e/music/mockups"
+   sodipodi:docname="sidemenu.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <mask
+       maskUnits="userSpaceOnUse"
+       id="mask8183">
+      <rect
+         style="opacity:0.2;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="rect8185"
+         width="300"
+         height="48"
+         x="-399.99997"
+         y="132" />
+    </mask>
+    <mask
+       maskUnits="userSpaceOnUse"
+       id="mask12251">
+      <rect
+         style="opacity:0.9004975;fill:#ffffff;fill-opacity:1;stroke:none"
+         id="rect12253"
+         width="48"
+         height="48"
+         x="0"
+         y="384" />
+    </mask>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="380.65724"
+     inkscape:cy="230.28344"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     width="800px"
+     height="480px"
+     gridspacingx="48px"
+     gridspacingy="48px"
+     showgrid="true"
+     inkscape:grid-points="true"
+     inkscape:guide-points="false"
+     inkscape:window-width="1018"
+     inkscape:window-height="713"
+     inkscape:window-x="10"
+     inkscape:window-y="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <image
+       id="image2233"
+       sodipodi:absref="/home/marineam/e/music/data/bg.png"
+       xlink:href="/home/marineam/e/music/data/bg.png"
+       x="0"
+       y="0"
+       width="800"
+       height="480" />
+    <g
+       id="g8187"
+       transform="matrix(2.08,0,0,1,976,-32)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image2291"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image2349" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:15.29705811px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="126.93042"
+       y="23.094973"
+       id="text8199"
+       transform="scale(1.2747549,0.7844645)"><tspan
+         sodipodi:role="line"
+         id="tspan8201"
+         x="126.93042"
+         y="23.094973">This is a Song</tspan></text>
+    <g
+       id="g9172"
+       transform="matrix(2.08,0,0,1,976,16)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image9174"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image9176" />
+    </g>
+    <g
+       id="g9178"
+       transform="matrix(2.08,0,0,1,976,64)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image9180"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image9182" />
+    </g>
+    <g
+       id="g9184"
+       transform="matrix(2.08,0,0,1,976,112)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image9186"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image9188" />
+    </g>
+    <g
+       id="g9190"
+       transform="matrix(2.08,0,0,1,976,160)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image9192"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image9194" />
+    </g>
+    <g
+       id="g9196"
+       transform="matrix(2.08,0,0,1,976,208)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image9198"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image9200" />
+    </g>
+    <g
+       id="g9202"
+       transform="matrix(2.08,0,0,1,976,256)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image9204"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image9206" />
+    </g>
+    <g
+       id="g9208"
+       transform="matrix(2.08,0,0,1,976,304)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image9210"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image9212" />
+    </g>
+    <g
+       id="g9214"
+       transform="matrix(2.08,0,0,1,976,352)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image9216"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image9218" />
+    </g>
+    <g
+       id="g9220"
+       transform="matrix(0.48,0,0,1,192,-32)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image9222"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image9224" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:32px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="10"
+       y="32"
+       id="text9226"
+       inkscape:transform-center-x="27.945312"
+       inkscape:transform-center-y="-32.828125"><tspan
+         sodipodi:role="line"
+         x="10"
+         y="32"
+         id="tspan9230"
+         style="font-size:32px;fill:#ffffff;fill-opacity:1">Playlist</tspan></text>
+    <g
+       id="g10209"
+       transform="matrix(0.48,0,0,1,192,16)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image10211"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image10213" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:32px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="10"
+       y="80"
+       id="text10215"
+       inkscape:transform-center-x="27.945312"
+       inkscape:transform-center-y="-32.828125"><tspan
+         sodipodi:role="line"
+         x="10"
+         y="80"
+         id="tspan10217"
+         style="font-size:32px;fill:#ffffff;fill-opacity:1">Library</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-2.171875"
+       y="468.75"
+       id="text10219"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan10221"
+         x="-2.171875"
+         y="468.75">12:00 PM</tspan></text>
+    <g
+       id="g11192"
+       transform="matrix(2.08,0,0,1,976,400)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image11194"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image11196" />
+    </g>
+    <g
+       id="g11198"
+       transform="matrix(0.48,0,0,1,192,64)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image11200"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image11202" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:32px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="10"
+       y="128"
+       id="text11204"
+       inkscape:transform-center-x="27.945312"
+       inkscape:transform-center-y="-32.828125"><tspan
+         sodipodi:role="line"
+         x="10"
+         y="128"
+         id="tspan11206"
+         style="font-size:32px;fill:#ffffff;fill-opacity:1">Radio</tspan></text>
+    <g
+       id="g11212"
+       transform="matrix(0.48,0,0,1,192,112)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image11214"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image11216" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:32px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="10"
+       y="176"
+       id="text11218"
+       inkscape:transform-center-x="27.945312"
+       inkscape:transform-center-y="-32.828125"><tspan
+         sodipodi:role="line"
+         x="10"
+         y="176"
+         id="tspan11220"
+         style="font-size:32px;fill:#ffffff;fill-opacity:1">Status</tspan></text>
+    <image
+       y="384"
+       x="5"
+       id="image11277"
+       height="48"
+       width="43"
+       sodipodi:absref="/home/marineam/e/music/data/play.png"
+       xlink:href="/home/marineam/e/music/data/play.png"
+       mask="url(#mask12251)" />
+    <rect
+       style="opacity:0.9004975;fill:#00ffff;fill-opacity:1;stroke:none"
+       id="rect12255"
+       width="48"
+       height="192"
+       x="0"
+       y="192" />
+    <rect
+       style="opacity:0.9004975;fill:#00ffff;fill-opacity:1;stroke:none"
+       id="rect12257"
+       width="48"
+       height="144"
+       x="-816"
+       y="0"
+       transform="scale(-1,1)" />
+    <g
+       id="g12259"
+       transform="matrix(0.32,0,0,1,176,208)">
+      <image
+         height="48"
+         width="300"
+         y="32"
+         xlink:href="/home/marineam/e/music/data/mitem.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem.png"
+         id="image12261"
+         x="-400" />
+      <image
+         transform="translate(0,-100)"
+         mask="url(#mask8183)"
+         height="48"
+         width="300"
+         y="132"
+         x="-400"
+         xlink:href="/home/marineam/e/music/data/mitem2.png"
+         sodipodi:absref="/home/marineam/e/music/data/mitem2.png"
+         id="image12263" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="60"
+       y="258"
+       id="text12269"><tspan
+         sodipodi:role="line"
+         id="tspan12271"
+         x="60"
+         y="258">Random</tspan></text>
+    <rect
+       style="opacity:0.9004975;fill:#00ffff;fill-opacity:1;stroke:none"
+       id="rect12281"
+       width="48"
+       height="48"
+       x="48"
+       y="384" />
+    <rect
+       style="opacity:0.9004975;fill:#00ffff;fill-opacity:1;stroke:none"
+       id="rect12283"
+       width="48"
+       height="48"
+       x="96"
+       y="384" />
+  </g>
+</svg>
