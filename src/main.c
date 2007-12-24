@@ -27,8 +27,8 @@ int main()
 	layout_init();
 	music_init();
 
-	main_menu_add("Playlist", 1);
-	main_menu_add("Library", 0);
+	//main_menu_add("Playlist", 1);
+	//main_menu_add("Library", 0);
 	//main_menu_add("Radio", 0);
 	//main_menu_add("Status", 0);
 

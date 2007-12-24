@@ -94,11 +94,11 @@ static void layout_signal(void *data, Evas_Object *obj, const char *signal, cons
 {
 	click_time = ecore_time_get();
 
-	if (!strcmp("playpause", source) && playpause_playing) {
+	if (!strcmp("play", source) && playpause_playing) {
 		mpdclient_pause(1);
 		edje_object_signal_emit(layout, "pause", "");
 	}
-	else if (!strcmp("playpause", source)) {
+	else if (!strcmp("play", source)) {
 		mpdclient_pause(0);
 		edje_object_signal_emit(layout, "play", "");
 	}

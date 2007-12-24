@@ -4,6 +4,7 @@ static Evas_Object *music;
 static Evas_Object *slider;
 static Evas_Object *playlist;
 static int playpause_playing;
+static int current_position = -1;
 
 static Evas_Object* song_create(void *vdata);
 static void song_destroy(Evas_Object *song);
@@ -80,6 +81,32 @@ int music_song_count() {
 void music_song_update(int pos, int time)
 {
 	scrollbox_item_active(playlist, pos);
+
+#if 0
+	if (pos >= 0 && pos != current_position) {
+		struct scrollbox_item *item;
+		mpd_Song *song;
+
+		current_position = pos;
+		item = scrollbox_item_get(playlist, pos);
+		song = item->data;
+
+		if (song->title)
+			edje_object_part_text_set(music, "title", song->title);
+		else
+			edje_object_part_text_set(music, "title", song->file);
+
+		if (song->artist)
+			edje_object_part_text_set(music, "artist", song->artist);
+		else
+			edje_object_part_text_set(music, "artist", "");
+	}
+	else if (pos < 0 && current_position != -1) {
+		current_position = -1;
+		edje_object_part_text_set(music, "title", "");
+		edje_object_part_text_set(music, "artist", "");
+	}
+#endif
 }
 
 void music_playing(int state) {

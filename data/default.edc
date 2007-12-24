@@ -1,5 +1,76 @@
 #include "../config.h"
 
+#define BUTTON_PART(n, txt, r1, o1, r2, o2)       \
+      part {                                      \
+        name: n"_bg1";                            \
+        description {                             \
+          state: "default" 0.0;                   \
+          image {                                 \
+            normal: "mitem.png";                  \
+            border: 18 18 18 18;                  \
+          }                                       \
+          rel1 {                                  \
+            relative: r1;                         \
+            offset: o1;                           \
+          }                                       \
+          rel2 {                                  \
+            relative: r2;                         \
+            offset: o2;                           \
+          }                                       \
+          color: 255 255 255 150;                 \
+        }                                         \
+      }                                           \
+      part {                                      \
+        name: n"_bg2";                            \
+        description {                             \
+          state: "default" 0.0;                   \
+          image {                                 \
+            normal: "mitem2.png";                 \
+            border: 18 18 18 18;                  \
+          }                                       \
+          rel1 {                                  \
+            to: n"_bg1";                          \
+          }                                       \
+          rel2 {                                  \
+            to: n"_bg1";                          \
+          }                                       \
+          color: 255 255 255 50;                  \
+        }                                         \
+        description {                             \
+          state: "active" 0.0;                    \
+          inherit: "default" 0.0;                 \
+          color: 255 255 255 255;                 \
+        }                                         \
+      }                                           \
+      part {                                      \
+        name: n"label";                           \
+        type: TEXT;                               \
+        effect: NONE;                             \
+        description {                             \
+          state: "default" 0.0;                   \
+          rel1 {                                  \
+            to: n"_bg1";                          \
+            relative: 0.1 0.1;                    \
+          }                                       \
+          rel2 {                                  \
+            relative: 0.9 0.9;                    \
+            to: n"_bg1";                          \
+          }                                       \
+          text {                                  \
+            text: txt;                            \
+            font: "Edje-Vera-Bold";               \
+            fit: 1 1;                             \
+            size: 12;                             \
+          }                                       \
+          color: 235 245 255 200;                 \
+        }                                         \
+        description {                             \
+          state: "active" 0.0;                    \
+          inherit: "default" 0.0;                 \
+          color: 255 255 255 255;                 \
+        }                                         \
+      }
+
 fonts {
   font: "Vera.ttf"   "Edje-Vera";
   font: "VeraBd.ttf" "Edje-Vera-Bold";
@@ -40,31 +111,32 @@ collections {
           }
         }
       }
+      BUTTON_PART("playlist", "Playlist", 0.0 0.0, 0 0, 0.0 0.0, SIDEBAR UNIT);
+      BUTTON_PART("library", "Library", 0.0 0.0, 0 UNIT, 0.0 0.0, SIDEBAR (2*UNIT));
+      BUTTON_PART("radio", "Radio", 0.0 0.0, 0 (2*UNIT), 0.0 0.0, SIDEBAR (3*UNIT));
+      BUTTON_PART("status", "Status", 0.0 0.0, 0 (3*UNIT), 0.0 0.0, SIDEBAR (4*UNIT));
       part {
-        name: "playpause";
+        name: "pause";
         description {
           state: "default" 0.0;
-          aspect: 0.91 0.91;
-          image {
-            normal: "play.png";
-          }
-          rel1 {
-            relative: 0.0 0.0;
-            offset: PAD PAD;
-          }
-          rel2 {
-            relative: 0.0 0.0;
-            offset: (UNIT - PAD) (UNIT - PAD);
-          }
-          color: 235 245 255 200;
-        }
-        description {
-          state: "play" 0.0;
           aspect: 0.75 0.75;
           image {
             normal: "pause.png";
           }
+          rel1 {
+            relative: 0.0 1.0;
+            offset: PAD ((2*-UNIT)+PAD);
+          }
+          rel2 {
+            relative: 0.0 1.0;
+            offset: (UNIT-PAD) ((-UNIT)+PAD);
+          }
+          color: 235 245 255 0;
+        }
+        description {
+          state: "play" 0.0;
           inherit: "default" 0.0;
+          color: 235 245 255 200;
         }
         description {
           state: "pause" 0.0;
@@ -72,6 +144,34 @@ collections {
         }
       }
       part {
+        name: "play";
+        description {
+          state: "default" 0.0;
+          aspect: 0.91 0.91;
+          image {
+            normal: "play.png";
+          }
+          rel1 {
+            to: "pause";
+            relative: 0.0 0.0;
+          }
+          rel2 {
+            to: "pause";
+            relative: 1.0 1.0;
+          }
+          color: 235 245 255 200;
+        }
+        description {
+          state: "play" 0.0;
+          inherit: "default" 0.0;
+          color: 235 245 255 0;
+        }
+        description {
+          state: "pause" 0.0;
+          inherit: "default" 0.0;
+        }
+      }
+      /*part {
         name: "volume";
         type: RECT;
         description {
@@ -109,7 +209,7 @@ collections {
           }
           color: 235 245 255 200;
         }
-      }
+      }*/
       part {
         name: "time";
         type: TEXT;
@@ -118,17 +218,18 @@ collections {
           state: "default" 0.0;
           rel1 {
             relative: 0.0 1.0;
-            offset: PAD ((1.8*-UNIT)-PAD);
+            offset: PAD (-UNIT + PAD);
           }
           rel2 {
             relative: 0.0 1.0;
-            offset: (SIDEBAR-PAD) (-UNIT+PAD);
+            offset: ((SIDEBAR)-PAD) -PAD;
           }
           text {
-            text: "12:00 PM, Dec 31";
+            text: "12:00 PM";
             font: "Edje-Vera-Bold";
             fit: 1 1;
             size: 12;
+            align: 0.5 0.5;
           }
           color: 235 245 255 200;
         }
@@ -140,22 +241,7 @@ collections {
           state: "default" 0.0;
           rel1 {
             relative: 0.0 0.0;
-            offset: UNIT 0;
-          }
-          rel2 {
-            relative: 1.0 1.0;
-            offset: 0 -UNIT;
-          }
-        }
-      }
-      part {
-        name: "main_menu";
-        type: SWALLOW;
-        description {
-          state: "default" 0.0;
-          rel1 {
-            relative: 0.0 1.0;
-            offset: 0 -UNIT;
+            offset: SIDEBAR 0;
           }
           rel2 {
             relative: 1.0 1.0;
@@ -169,8 +255,9 @@ collections {
         signal: "play";
         source: "";
         action: STATE_SET "play" 0.0;
-        transition: SINUSOIDAL 0.2;
-        target: "playpause";
+        transition: LINEAR 0.2;
+        target: "pause";
+        target: "play";
       }
       program {
         name: "playpause_pause";
@@ -178,110 +265,8 @@ collections {
         source: "";
         action: STATE_SET "pause" 0.0;
         transition: SINUSOIDAL 0.2;
-        target: "playpause";
-      }
-    }
-  }
-
-  group {
-    name: "menu_item";
-    parts {
-      part {
-        name: "_bg1";
-        description {
-          state: "default" 0.0;
-          image {
-            normal: "mitem.png";
-            border: 18 18 18 18;
-          }
-          rel1 {
-            relative: 0.0 0.0;
-          }
-          rel2 {
-            relative: 1.0 0.9;
-          }
-          color: 255 255 255 150;
-        }
-        description {
-          state: "active" 0.0;
-          inherit: "default" 0.0;
-          rel1 {
-            relative: 0.0 0.0;
-          }
-          rel2 {
-            relative: 1.0 1.0;
-          }
-        }
-      }
-      part {
-        name: "_bg2";
-        description {
-          state: "default" 0.0;
-          image {
-            normal: "mitem2.png";
-            border: 18 18 18 18;
-          }
-          rel1 {
-            to: "_bg1";
-          }
-          rel2 {
-            to: "_bg1";
-          }
-          color: 255 255 255 50;
-        }
-        description {
-          state: "active" 0.0;
-          inherit: "default" 0.0;
-          color: 255 255 255 255;
-        }
-      }
-      part {
-        name: "label";
-        type: TEXT;
-        effect: NONE;
-        description {
-          state: "default" 0.0;
-          rel1 {
-            relative: 0.1 0.1;
-          }
-          rel2 {
-            relative: 0.9 0.8;
-          }
-          text {
-            text: "XXX";
-            font: "Edje-Vera-Bold";
-            fit: 1 1;
-            size: 12;
-          }
-          color: 235 245 255 200;
-        }
-        description {
-          state: "active" 0.0;
-          inherit: "default" 0.0;
-          color: 255 255 255 255;
-        }
-      }
-    }
-    programs {
-      program {
-        name: "active";
-        signal: "button,on";
-        source: "";
-        action: STATE_SET "active" 0.0;
-        transition: DECELERATE 0.3;
-        target:  "_bg1";
-        target:  "_bg2";
-        target:  "label";
-      }
-      program {
-        name: "inactive";
-        signal: "button,off";
-        source: "";
-        action: STATE_SET "default" 0.0;
-        transition: DECELERATE 0.2;
-        target:  "_bg1";
-        target:  "_bg2";
-        target:  "label";
+        target: "pause";
+        target: "play";
       }
     }
   }
@@ -296,7 +281,6 @@ collections {
           state: "default" 0.0;
           rel1 {
             relative: 0.0 0.0;
-            offset: SIDEBAR-UNIT 0;
           }
           rel2 {
             relative: 1.0 1.0;
@@ -466,9 +450,6 @@ collections {
           state: "active" 0.0;
           inherit: "default" 0.0;
           color: 255 255 255 255;
-          text {
-            size: 12;
-          }
         }
       }
       part {
@@ -500,10 +481,39 @@ collections {
           state: "active" 0.0;
           inherit: "default" 0.0;
           color: 255 255 255 255;
-          text {
-            size: 12;
-          }
         }
+      }
+      part {
+        name: "time";
+        type: TEXT;
+        effect: NONE;
+        description {
+          state: "default" 0.0;
+          rel1 {
+            to: _bg1;
+            relative: 0.0 0.6;
+            offset: 50 0;
+          }
+          rel2 {
+            to: _bg1;
+            relative: 1.0 0.95;
+            offset: -10 -5;
+          }
+          text {
+            text: "0:00";
+            font: "Edje-Vera-Bold";
+            fit: 0 1;
+            size: 12;
+            align: 1.0 0.5;
+          }
+          color: 235 245 255 200;
+        }
+        description {
+          state: "active" 0.0;
+          inherit: "default" 0.0;
+          color: 255 255 255 255;
+        }
+      }
     }
     programs {
       program {
@@ -516,6 +526,7 @@ collections {
         target:  "_bg2";
         target:  "title";
         target:  "artist";
+        target:  "time";
       }
       program {
         name: "inactive";
@@ -527,6 +538,7 @@ collections {
         target:  "_bg2";
         target:  "title";
         target:  "artist";
+        target:  "time";
       }
     }
   }

@@ -113,6 +113,16 @@ void scrollbox_item_remove(Evas_Object *box, int pos)
 	scrollbox_bar_update(box);
 }
 
+struct scrollbox_item* scrollbox_item_get(Evas_Object *box, int pos)
+{
+	struct scrollbox *boxinfo;
+
+	boxinfo = evas_object_data_get(box, "scrollbox");
+
+	ecore_list_index_goto(boxinfo->list, pos);
+	return ecore_list_remove(boxinfo->list);
+}
+
 int scrollbox_item_count(Evas_Object *box) {
 	struct scrollbox *boxinfo;
 
