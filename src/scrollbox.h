@@ -24,6 +24,7 @@ struct scrollbox_item {
 
 Evas_Object* scrollbox_new();
 void scrollbox_show(Evas_Object *box);
+void scrollbox_hide(Evas_Object *box);
 void scrollbox_item_insert(Evas_Object *box, struct scrollbox_item *item);
 void scrollbox_item_remove(Evas_Object *box, int pos);
 int scrollbox_item_count(Evas_Object *box);

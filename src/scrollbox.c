@@ -452,7 +452,7 @@ static void scrollbox_scroll(Evas_Object *box, int top)
 
 			new = ecore_list_index_goto(boxinfo->list, i);
 			if (new) {
-				scrollbox_view_append(boxinfo, new);
+				view = scrollbox_view_append(boxinfo, new);
 				if (i == boxinfo->active)
 					new->active(view, 1);
 			}

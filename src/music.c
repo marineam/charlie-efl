@@ -10,46 +10,27 @@ static void song_active(Evas_Object *song, int active);
 static void song_free(struct scrollbox_item *song);
 static void song_signal(void *data, Evas_Object *obj,
 		const char *signal, const char *source);
-static void music_signal(void *data, Evas_Object *obj,
-		const char *signal, const char *source);
 
 void music_init()
 {
-	music = edje_object_add(evas);
-	edje_object_file_set(music, theme, "music");
-	edje_object_signal_callback_add(music, "mouse,clicked,1", "*", music_signal, NULL);
-
 	playlist = scrollbox_new();
-	edje_object_part_swallow(music, "list", playlist);
 	evas_object_show(playlist);
 }
 
 void music_show()
 {
-	layout_swallow("main_content", music);
-	evas_object_show(music);
+	layout_swallow("main_content", playlist);
 	scrollbox_show(playlist);
 }
 
 void music_hide()
 {
-	evas_object_hide(music);
 	scrollbox_hide(playlist);
 }
 
 void music_resize()
 {
-#if 0
-	if (playlist_item_height) {
-		Evas_Coord listh;
-
-		edje_object_part_geometry_get(music, "list",
-			NULL, NULL, NULL, &listh);
-		playlist_count = listh / playlist_item_height;
-
-		/* TODO: actually do something to resize the playlist */
-	}
-#endif
+	/* TODO: Signal the playlist that it resized */
 }
 
 void music_song_insert(mpd_Song *song)
@@ -79,32 +60,6 @@ int music_song_count() {
 void music_song_update(int pos, int time)
 {
 	scrollbox_item_active(playlist, pos);
-
-#if 0
-	if (pos >= 0 && pos != current_position) {
-		struct scrollbox_item *item;
-		mpd_Song *song;
-
-		current_position = pos;
-		item = scrollbox_item_get(playlist, pos);
-		song = item->data;
-
-		if (song->title)
-			edje_object_part_text_set(music, "title", song->title);
-		else
-			edje_object_part_text_set(music, "title", song->file);
-
-		if (song->artist)
-			edje_object_part_text_set(music, "artist", song->artist);
-		else
-			edje_object_part_text_set(music, "artist", "");
-	}
-	else if (pos < 0 && current_position != -1) {
-		current_position = -1;
-		edje_object_part_text_set(music, "title", "");
-		edje_object_part_text_set(music, "artist", "");
-	}
-#endif
 }
 
 void music_playing(int state) {
@@ -192,9 +147,4 @@ static void song_signal(void *data, Evas_Object *obj, const char *signal, const 
 
 	scrollbox_item_active(playlist, *pos);
 	mpdclient_song_play(*pos);
-}
-
-static void music_signal(void *data, Evas_Object *obj, const char *signal, const char *source)
-{
-	click_time = ecore_time_get();
 }
