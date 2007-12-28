@@ -32,9 +32,7 @@ Evas_Object* scrollbox_new()
 		EVAS_CALLBACK_MOUSE_DOWN, scrollbox_signal, box);
 
 	evas_object_clip_set(boxinfo->scroll_box, boxinfo->base_box);
-	evas_object_show(boxinfo->base_box);
 	evas_object_show(boxinfo->scroll_box);
-	evas_object_show(boxinfo->scroll_bar);
 
 	e_box_align_set(boxinfo->scroll_box, 0.0, 0.0);
 	evas_object_color_set(box, 255, 255, 255, 0);
@@ -57,7 +55,20 @@ void scrollbox_show(Evas_Object *box)
 	evas_object_resize(boxinfo->scroll_box, w - UNIT, h - h % UNIT);
 	scrollbox_bar_update(box);
 
+	evas_object_show(boxinfo->base_box);
+	evas_object_show(boxinfo->scroll_bar);
 	evas_object_show(box);
+}
+
+void scrollbox_hide(Evas_Object *box)
+{
+	struct scrollbox *boxinfo;
+
+	boxinfo = evas_object_data_get(box, "scrollbox");
+
+	evas_object_hide(boxinfo->base_box);
+	evas_object_hide(boxinfo->scroll_bar);
+	evas_object_hide(box);
 }
 
 void scrollbox_item_insert(Evas_Object *box, struct scrollbox_item *item)

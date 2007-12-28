@@ -1,10 +1,8 @@
 #include "main.h"
 
 static Evas_Object *music;
-static Evas_Object *slider;
 static Evas_Object *playlist;
 static int playpause_playing;
-static int current_position = -1;
 
 static Evas_Object* song_create(void *vdata);
 static void song_destroy(Evas_Object *song);
@@ -24,19 +22,19 @@ void music_init()
 	playlist = scrollbox_new();
 	edje_object_part_swallow(music, "list", playlist);
 	evas_object_show(playlist);
-
-	slider = evas_object_rectangle_add(evas);
-	evas_object_color_set(slider, 10, 207, 233, 50);
 }
 
 void music_show()
 {
 	layout_swallow("main_content", music);
 	evas_object_show(music);
-
-	evas_object_show(slider);
-
 	scrollbox_show(playlist);
+}
+
+void music_hide()
+{
+	evas_object_hide(music);
+	scrollbox_hide(playlist);
 }
 
 void music_resize()
