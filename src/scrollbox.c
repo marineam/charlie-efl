@@ -378,7 +378,7 @@ static int scrollbox_scroll_helper(void *box) {
 
 	boxinfo = evas_object_data_get(box, "scrollbox");
 
-	e_box_freeze(boxinfo->scroll_box);
+	evas_event_freeze(evas);
 	e_box_align_get(boxinfo->scroll_box, NULL, &curr);
 
 	diff = boxinfo->scroll_align - curr;
@@ -402,7 +402,7 @@ static int scrollbox_scroll_helper(void *box) {
 	}
 
 	e_box_align_set(boxinfo->scroll_box, 0.0, curr);
-	e_box_thaw(boxinfo->scroll_box);
+	evas_event_thaw(evas);
 
 	return ret;
 }
@@ -424,7 +424,7 @@ static void scrollbox_scroll(Evas_Object *box, int top)
 	if (top == boxinfo->top)
 		return;
 
-	e_box_freeze(boxinfo->scroll_box);
+	evas_event_freeze(evas);
 
 	if (top < boxinfo->top) {
 		/* Scroll up */
@@ -494,7 +494,7 @@ static void scrollbox_scroll(Evas_Object *box, int top)
 			scrollbox_scroll_helper, box);
 	}
 
-	e_box_thaw(boxinfo->scroll_box);
+	evas_event_thaw(evas);
 }
 
 static void scrollbox_autoscroll(Evas_Object *box, int pos)

@@ -57,6 +57,8 @@ static int mpdclient_playlist_update(void *data) {
 
 	mpd_nextListOkCommand(conn);
 
+	evas_event_freeze(evas);
+
 	while((entity = mpd_getNextInfoEntity(conn))) {
 		if(entity->type!=MPD_INFO_ENTITY_TYPE_SONG) {
 			mpd_freeInfoEntity(entity);
@@ -80,6 +82,7 @@ static int mpdclient_playlist_update(void *data) {
 	}
 
 	layout_update(status->state == MPD_STATUS_STATE_PLAY, status->volume);
+	evas_event_thaw(evas);
 
 	mpd_finishCommand(conn);
 	mpd_freeStatus(status);
