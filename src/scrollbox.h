@@ -3,7 +3,6 @@ struct scrollbox {
 	int count;
 	int top;
 	int active;
-	int scroll_top;
 	double scroll_align;
 	Ecore_Timer *scroll_timer;
 	Evas_Object *scroll_box;
