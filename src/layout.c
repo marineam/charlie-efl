@@ -49,11 +49,11 @@ void layout_init(void)
 
 	edje_object_signal_emit(layout, "button,on", displays[cur_display].name);
 	for (int n = 0; displays[n].name != NULL; n++) {
-		edje_object_signal_callback_add(layout, "mouse,clicked,1",
+		edje_object_signal_callback_add(layout, "mouse,down,1",
 			displays[n].name, menu_signal, NULL);
 	}
 
-	edje_object_signal_callback_add(layout, "mouse,clicked,1", "play", play_signal, NULL);
+	edje_object_signal_callback_add(layout, "mouse,down,1", "play", play_signal, NULL);
 
 	volume = evas_object_rectangle_add(evas);
 	evas_object_color_set(volume, 10, 207, 233, 50);

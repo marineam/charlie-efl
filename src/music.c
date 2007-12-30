@@ -81,7 +81,7 @@ static Evas_Object* song_create(void *vdata)
 
 	song = edje_object_add(evas);
 	edje_object_file_set(song, theme, "list_item");
-	edje_object_signal_callback_add(song, "mouse,clicked,1", "*",
+	edje_object_signal_callback_add(song, "mouse,down,1", "*",
 			song_signal, NULL);
 
 	pos = malloc(sizeof(int));
