@@ -160,16 +160,20 @@ static void menu_signal(void *data, Evas_Object *obj, const char *signal, const 
 	if (cur_display == n)
 		return;
 
-	edje_object_signal_emit(layout, "button,off",
-		displays[cur_display].name);
+	evas_event_freeze(evas);
+
 	if (displays[cur_display].hide)
 		displays[cur_display].hide();
-
-	edje_object_signal_emit(layout, "button,on", displays[n].name);
 	if (displays[n].show)
 		displays[n].show();
 
+	edje_object_signal_emit(layout, "button,off",
+		displays[cur_display].name);
+	edje_object_signal_emit(layout, "button,on", displays[n].name);
+
 	cur_display = n;
+
+	evas_event_thaw(evas);
 }
 
 static int time_update(void *data)
